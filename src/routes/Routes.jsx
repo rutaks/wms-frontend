@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import LoadingLayout from '../layouts/LoadingLayout';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import pages from './pages';
 
 const Login = lazy(() => import('../views/Login'));
@@ -10,6 +11,7 @@ const Routes = () => {
     <Suspense fallback={<LoadingLayout />}>
       <Switch>
         <Route path={pages.login.url} name={pages.login.name} component={Login} />
+        <PrivateRoute />
       </Switch>
     </Suspense>
   );
