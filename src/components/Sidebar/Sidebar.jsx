@@ -70,15 +70,7 @@ const Sidebar = ({ children }) => {
             </Dropdown>
           </div>
         </Layout.Header>
-        <Card
-          className="site-layout-background"
-          style={{
-            margin: '24px 16px',
-            borderRadius: '12px'
-          }}
-        >
-          {children}
-        </Card>
+        {children}
       </Layout>
     </Layout>
   );

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Sidebar } from '../../../components';
 import ClientsView from '../../../views/ClientsView/ClientsView';
+import CreateClientView from '../../../views/CreateClientView';
 
 const PrivateRoute = () => {
   return (
@@ -13,6 +14,9 @@ const PrivateRoute = () => {
           </Route>
           <Route exact path={'/clients'}>
             <ClientsView />
+          </Route>
+          <Route exact path={'/clients/new'}>
+            <CreateClientView />
           </Route>
         </Switch>
       </Sidebar>
