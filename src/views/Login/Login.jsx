@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Input, Form } from 'antd';
+import { Button, Col, Input, Form, Row } from 'antd';
 import { Formik } from 'formik';
 import Title from 'antd/lib/typography/Title';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -28,7 +28,24 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <Title className="login-title">WMS</Title>
+      <center>
+        <Row
+          style={{ marginLeft: '160px', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}
+        >
+          <Col style={{ alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+            <img
+              src={window.location.origin + '/img/logo.png'}
+              style={{
+                height: '120px',
+                aspectRatio: 3 / 2
+              }}
+              alt="Logo"
+            />
+            <br />
+            <Title className="login-title">WMS</Title>
+          </Col>
+        </Row>
+      </center>
       <Col span={24}>
         <Formik
           initialValues={loginInitialValues}
@@ -68,8 +85,9 @@ const Login = () => {
                   />
                 </Form.Item>
                 <Button
+                  style={{ marginBottom: '12px' }}
                   block
-                  // loading={loginState.loading}
+                  loading={login.loading}
                   type="primary"
                   htmlType="submit"
                   className="login-form-button"
@@ -78,6 +96,16 @@ const Login = () => {
                   }}
                 >
                   Log in
+                </Button>
+                <Button
+                  block
+                  type="link"
+                  htmlType="submit"
+                  onClick={() => {
+                    history.push('/forgot-password');
+                  }}
+                >
+                  Forgot Password? Click here
                 </Button>
               </Fragment>
             );

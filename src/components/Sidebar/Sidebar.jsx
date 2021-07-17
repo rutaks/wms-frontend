@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Layout, Menu, Dropdown } from 'antd';
+import { Layout, Menu, Dropdown, Row, Col } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -13,6 +13,7 @@ import {
   CreditCardOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../../context/Auth';
+import Avatar from 'antd/lib/avatar/avatar';
 
 const Sidebar = ({ children }) => {
   const history = useHistory();
@@ -34,7 +35,17 @@ const Sidebar = ({ children }) => {
   return (
     <Layout style={{ height: '100vh' }}>
       <Layout.Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
+        <div style={{ marginLeft: collapsed ? '0px' : '40px' }}>
+          {/* logo-no-color */}
+          <img
+            src={window.location.origin + '/img/logo-no-color.png'}
+            style={{
+              height: '60px',
+              aspectRatio: 3 / 2
+            }}
+            alt="Logo"
+          />
+        </div>
         <Menu
           theme="dark"
           mode="inline"
@@ -76,7 +87,14 @@ const Sidebar = ({ children }) => {
               }
             >
               <a href="/" className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                {`${auth.user.firstName} ${auth.user.lastName}`} <DownOutlined />
+                <Row>
+                  <Col style={{ paddingRight: '12px' }}>
+                    <Avatar shape="square" size="small" icon={<UserOutlined />} />
+                  </Col>
+                  <Col>
+                    {`${auth.user.firstName} ${auth.user.lastName}`} <DownOutlined />
+                  </Col>
+                </Row>
               </a>
             </Dropdown>
           </div>

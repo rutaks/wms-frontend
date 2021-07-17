@@ -37,7 +37,7 @@ export const useMutation = ({ defaultLoadingState = false }) => {
         setIsSuccess(true);
         setIsSuccess(false);
       } catch (e) {
-        const apiError = e.response?.data?.error;
+        const apiError = e.response?.data?.message;
         // Set request state as ended and failed
         setError(apiError || e.message || e);
         setIsError(true);
