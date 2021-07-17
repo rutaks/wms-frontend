@@ -1,7 +1,7 @@
 import 'dotenv/config';
 /**
  * A file where urls should be kept as well as other env variables
- * @author Awesomity Lab
+ * @author rutaks Lab
  * @since 06.05.2020
  */
 

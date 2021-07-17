@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 /**
  * A function used check if user is logged in through checking if token exists
- * @author Awesomity Lab
+ * @author rutaks Lab
  * @since 06.05.2020
  */
 export default () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Layout, Menu, Dropdown, Card } from 'antd';
+import { Layout, Menu, Dropdown } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -12,9 +12,11 @@ import {
   ControlOutlined,
   CreditCardOutlined
 } from '@ant-design/icons';
+import { useAuth } from '../../context/Auth';
 
 const Sidebar = ({ children }) => {
   const history = useHistory();
+  const auth = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [navItems] = useState([
     { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
@@ -59,13 +61,22 @@ const Sidebar = ({ children }) => {
               overlay={
                 <Menu>
                   <Menu.Item key="0">
-                    <a href="/">Logout</a>
+                    <a
+                      href="/"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        auth.logoutUser();
+                        history.replace('/login');
+                      }}
+                    >
+                      Logout
+                    </a>
                   </Menu.Item>
                 </Menu>
               }
             >
               <a href="/" className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                Samuel Rutakayile <DownOutlined />
+                {`${auth.user.firstName} ${auth.user.lastName}`} <DownOutlined />
               </a>
             </Dropdown>
           </div>

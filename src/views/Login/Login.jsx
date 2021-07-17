@@ -7,8 +7,25 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import AuthLayout from '../../layouts/AuthLayout';
 import { loginInitialValues, loginValidationSchema } from '../../validations/login.validation';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
+import { useHistory } from 'react-router-dom';
+import useLogin from '../../hooks/api/auth/useLogin';
+import useHandleApiState from '../../hooks/useHandleApiState';
+import useAuth from '../../context/Auth/useAuth';
 
 const Login = () => {
+  const login = useLogin();
+  const auth = useAuth();
+  const history = useHistory();
+
+  useHandleApiState(login, {
+    onSuccess: (response) => {
+      const { payload } = response;
+      auth.loginUser(payload);
+      history.push('/');
+    },
+    onError: (error) => console.log(error)
+  });
+
   return (
     <AuthLayout>
       <Title className="login-title">WMS</Title>
@@ -17,7 +34,7 @@ const Login = () => {
           initialValues={loginInitialValues}
           validationSchema={loginValidationSchema}
           onSubmit={(body) => {
-            console.log(body);
+            login.sendRequest(body);
           }}
         >
           {(formikProps) => {

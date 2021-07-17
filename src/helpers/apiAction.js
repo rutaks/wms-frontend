@@ -14,7 +14,7 @@ import { actionTypes } from '../redux/action-types';
  * @param {String} onFailure - state on process failed
  *
  * @return {Object} An object containing all params passed in function to send to the API
- * @author Awesomity Lab
+ * @author rutaks Lab
  * @since 06.05.2020
  */
 export default ({

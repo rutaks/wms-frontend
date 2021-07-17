@@ -5,7 +5,7 @@ import config from '../configs/config';
 
 /**
  * Class representing methods related to logging and monitoring actions
- * @author Awesomity Lab
+ * @author rutaks Lab
  * @since version 1.0
  */
 class MonitoringHelper {

@@ -1,19 +1,17 @@
-// import {BASE_URL} from '@env';
-import Axios from "axios";
-import React from "react";
-import ApiContext from "./ApiContext";
-import { baseURL } from "../../util/api-client.util";
+import Axios from 'axios';
+import React from 'react';
+import ApiContext from './ApiContext';
+import { baseURL } from '../../util/constants.util';
 
 /**
- * Context Hook holding farmer instance during farmer form process
+ * Context Hook holding auth instance
  * @param props
  */
 const ApiProvider = ({ children }) => {
-  const instance = Axios.create({
-    baseURL,
-  });
+  const instance = Axios.create({ baseURL });
+  const data = { instance };
 
-  return <ApiContext.Provider value={instance}>{children}</ApiContext.Provider>;
+  return <ApiContext.Provider value={data}>{children}</ApiContext.Provider>;
 };
 
 export default ApiProvider;
