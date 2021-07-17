@@ -5,7 +5,7 @@ import * as urlHelper from './urlHelper';
 /**
  * A function used to pass the API url, JWT if existing as well as other axios properties to be added
  * @param data - additional data to be passed to the axios function
- * @author Awesomity Lab
+ * @author rutaks Lab
  * @since 06.05.2020
  */
 
