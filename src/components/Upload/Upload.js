@@ -11,28 +11,15 @@ const Upload = ({ setFile, shouldClearImage, imgPlaceholder, crop, aspect }) => 
 
   const getBase64 = (img, callback) => callback(URL.createObjectURL(img));
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
   const handleChange = async (info) => {
-    if (info.file.status === 'uploading') {
-      setLoading(!loading);
-    }
-    if (info.file.status === 'done') {
+    if (info?.file?.originFileObj) {
       getBase64(info.file.originFileObj, (imageUrl) => {
         setImageUrl(imageUrl);
         setLoading(false);
       });
-      setFile(info.file.originFileObj);
+      if (setFile) {
+        setFile(info.file.originFileObj);
+      }
     }
   };
 
@@ -55,7 +42,6 @@ const Upload = ({ setFile, shouldClearImage, imgPlaceholder, crop, aspect }) => 
       style={{ height: '120px' }}
       listType="picture-card"
       showUploadList={false}
-      beforeUpload={beforeUpload}
       onChange={handleChange}
     >
       {imageUrl && imageUrl !== '' ? (

@@ -1,13 +1,21 @@
+import * as Yup from 'yup';
+import { firstName, lastName, email, gender, phoneNumber, dob } from './validators';
+
 export const clientInitialValues = {
   firstName: '',
   lastName: '',
   gender: '',
   email: '',
   phoneNumber: '',
-  dob: ''
+  dob: '',
+  profilePictureUrl: ''
 };
 
-// export const loginValidationSchema = yup.object().shape({
-//   email,
-//   password
-// });
+export const clientValidationSchema = Yup.object().shape({
+  firstName,
+  lastName,
+  email,
+  gender,
+  phoneNumber,
+  dob
+});

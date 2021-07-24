@@ -3,22 +3,32 @@ import { Formik } from 'formik';
 import Form from 'antd/lib/form';
 import { Button, Col, DatePicker, Radio, Row } from 'antd';
 import moment from 'moment';
-import { clientInitialValues } from '../../validations/client.validation';
+import { clientInitialValues, clientValidationSchema } from '../../validations/client.validation';
 import { CustomInput } from '../';
 import PhoneNumberInput from '../PhoneNumberInput';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
 import Text from 'antd/lib/typography/Text';
 import Upload from '../Upload';
 
-const ClientForm = () => {
+const ClientForm = ({ onSubmit, mode, initialValues, isUploadingImg, isSubmitting }) => {
   return (
-    <Formik initialValues={clientInitialValues}>
+    <Formik
+      initialValues={initialValues || clientInitialValues}
+      validationSchema={clientValidationSchema}
+      onSubmit={(formikData) => {
+        onSubmit(formikData);
+      }}
+    >
       {(formikProps) => (
         <Fragment>
           <Row>
             <Col lg={4} md={24} sm={24}>
               <Text strong>Profile Picture</Text>
-              <Upload />
+              <Upload
+                crop
+                isLoading={isUploadingImg}
+                setFile={(f) => formikProps.setFieldValue('profilePictureUrl', f)}
+              />
             </Col>
           </Row>
           <br />
@@ -34,10 +44,13 @@ const ClientForm = () => {
           </Row>
           <Row>
             <Col lg={6}>
-              <Form.Item>
+              <Form.Item
+                validateStatus={getValidationStatus(formikProps, 'gender')}
+                help={getHelp(formikProps, 'gender')}
+              >
                 <Text strong>Gender</Text>
                 <Row align="middle">
-                  <Radio.Group>
+                  <Radio.Group onChange={(g) => formikProps.setFieldValue('gender', g.target.value)}>
                     <Radio value={'MALE'}>Male</Radio>
                     <Radio value={'FEMALE'}>Female</Radio>
                   </Radio.Group>
@@ -50,7 +63,19 @@ const ClientForm = () => {
               <CustomInput formikProps={formikProps} fieldName="email" label="Email" />
             </Col>
             <Col offset={1} flex="auto">
-              <PhoneNumberInput defaultPhoneNumber={'+250782697954'} />
+              <Form.Item
+                validateStatus={getValidationStatus(formikProps, 'phoneNumber')}
+                help={getHelp(formikProps, 'phoneNumber')}
+              >
+                <PhoneNumberInput
+                  label="Phone number"
+                  defaultPhoneNumber={formikProps?.values?.phoneNumber}
+                  onChange={(p) => {
+                    console.log(p);
+                    formikProps.setFieldValue('phoneNumber', `+${p}`);
+                  }}
+                />
+              </Form.Item>
             </Col>
           </Row>
           <Row>
@@ -71,9 +96,10 @@ const ClientForm = () => {
           </Row>
           <Button
             block
-            type="primary"
-            onClick={() => formikProps.setFieldValue('firstName', !formikProps.values.generateCode)}
+            type={mode === 'EDIT' ? 'warning' : 'primary'}
+            onClick={() => formikProps.handleSubmit()}
             style={{ fontWeight: 'bold' }}
+            loading={isSubmitting}
           >
             SUBMIT
           </Button>

@@ -1,6 +1,12 @@
 import { Breadcrumb, Button, Card, Col, Row, Statistic, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
-import { EditOutlined, DeleteOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+  SyncOutlined
+} from '@ant-design/icons';
 import React, { Fragment } from 'react';
 import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
@@ -145,6 +151,7 @@ const ClientsTable = () => {
                 <EditOutlined onClick={() => {}} />
                 <UnorderedListOutlined onClick={() => {}} />
                 <DeleteOutlined onClick={() => {}} />
+                <SyncOutlined />
               </Row>
             )}
           />
