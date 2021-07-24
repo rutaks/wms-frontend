@@ -7,6 +7,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "antd": "^4.6.4",
+    "antd-img-crop": "^3.14.3",
     "axios": "^0.20.0",
     "axios-auth-refresh": "^3.1.0",
     "craco": "^0.0.3",
@@ -56,12 +57,15 @@
     "@storybook/node-logger": "^6.0.21",
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.21",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "8.1.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "react-is": "^16.13.1",
-    "eslint-plugin-react": "^7.21.5",
-    "babel-eslint": "^10.1.0",
     "webpack": "4.42.0"
   }
 }

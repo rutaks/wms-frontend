@@ -56,7 +56,7 @@ const Sidebar = ({ children }) => {
             <Menu.Item key={navItem.url}>
               <Link to={navItem.url} />
               {navItem.icon}
-              {!collapsed && navItem.name}
+              {!collapsed && <span style={{ paddingLeft: '12px' }}>{navItem.name}</span>}
             </Menu.Item>
           ))}
         </Menu>
@@ -92,7 +92,7 @@ const Sidebar = ({ children }) => {
                     <Avatar shape="square" size="small" icon={<UserOutlined />} />
                   </Col>
                   <Col>
-                    {`${auth.user.firstName} ${auth.user.lastName}`} <DownOutlined />
+                    {`${auth?.user?.firstName} ${auth?.user?.lastName}`} <DownOutlined />
                   </Col>
                 </Row>
               </a>

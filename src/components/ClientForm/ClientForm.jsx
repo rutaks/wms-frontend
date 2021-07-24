@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
 import { Formik } from 'formik';
 import Form from 'antd/lib/form';
-import { Button, Col, DatePicker, Row, Select, Upload } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, Col, DatePicker, Radio, Row } from 'antd';
 import moment from 'moment';
 import { clientInitialValues } from '../../validations/client.validation';
 import { CustomInput } from '../';
 import PhoneNumberInput from '../PhoneNumberInput';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
 import Text from 'antd/lib/typography/Text';
+import Upload from '../Upload';
 
 const ClientForm = () => {
   return (
@@ -16,10 +16,10 @@ const ClientForm = () => {
       {(formikProps) => (
         <Fragment>
           <Row>
-            <Text strong>Profile Picture</Text>
-            <Upload listType="picture-card" className="avatar-uploader" showUploadList={false}>
-              <PlusOutlined />
-            </Upload>
+            <Col lg={4} md={24} sm={24}>
+              <Text strong>Profile Picture</Text>
+              <Upload />
+            </Col>
           </Row>
           <br />
           <Row>
@@ -34,27 +34,23 @@ const ClientForm = () => {
           </Row>
           <Row>
             <Col lg={6}>
-              <Form.Item
-                name="country"
-                validateStatus={getValidationStatus(formikProps, 'country')}
-                help={getHelp(formikProps, 'country')}
-              >
-                <Row align="middle" className="mabo16">
-                  <Text strong>Gender</Text>
-                  <Select>
-                    <Select.Option value={'MALE'}>MALE</Select.Option>
-                    <Select.Option value={'FEMALE'}>FEMALE</Select.Option>
-                  </Select>
+              <Form.Item>
+                <Text strong>Gender</Text>
+                <Row align="middle">
+                  <Radio.Group>
+                    <Radio value={'MALE'}>Male</Radio>
+                    <Radio value={'FEMALE'}>Female</Radio>
+                  </Radio.Group>
                 </Row>
               </Form.Item>
-            </Col>
-            <Col offset={1} flex="auto">
-              <PhoneNumberInput defaultPhoneNumber={'+250782697954'} />
             </Col>
           </Row>
           <Row>
             <Col flex="auto">
               <CustomInput formikProps={formikProps} fieldName="email" label="Email" />
+            </Col>
+            <Col offset={1} flex="auto">
+              <PhoneNumberInput defaultPhoneNumber={'+250782697954'} />
             </Col>
           </Row>
           <Row>

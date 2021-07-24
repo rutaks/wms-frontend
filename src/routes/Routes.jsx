@@ -7,6 +7,7 @@ import pages from './pages';
 const Login = lazy(() => import('../views/Login'));
 const ForgotPassword = lazy(() => import('../views/ForgotPassword'));
 const ResetPassword = lazy(() => import('../views/ResetPassword'));
+const ConfimClientAccount = lazy(() => import('../views/ConfimClientAccount'));
 
 const Routes = () => {
   return (
@@ -15,6 +16,12 @@ const Routes = () => {
         <Route exact path={pages.login.url} name={pages.login.name} component={Login} />
         <Route exact path={'/forgot-password'} name={'Forgot Password'} component={ForgotPassword} />
         <Route exact path={'/forgot-password/:token'} name={'Reset Password'} component={ResetPassword} />
+        <Route
+          exact
+          path={'/clients/confirm-account/:token'}
+          name={'Client Password Confirmation'}
+          component={ConfimClientAccount}
+        />
         <PrivateRoute />
       </Switch>
     </Suspense>
