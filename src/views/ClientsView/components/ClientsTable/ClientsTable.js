@@ -149,7 +149,11 @@ const ClientsTable = () => {
             render={(record) => (
               <Row style={{ justifyContent: 'space-evenly' }}>
                 <EditOutlined onClick={() => {}} />
-                <UnorderedListOutlined onClick={() => {}} />
+                <UnorderedListOutlined
+                  onClick={() => {
+                    history.push('/clients/1740ef5c-c43c-419d-beac-564b946a8538');
+                  }}
+                />
                 <DeleteOutlined onClick={() => {}} />
                 <SyncOutlined />
               </Row>

@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@nivo/bar": "^0.73.1",
+    "@nivo/core": "^0.73.0",
+    "@nivo/pie": "^0.73.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -12,6 +15,7 @@
     "axios-auth-refresh": "^3.1.0",
     "craco": "^0.0.3",
     "craco-less": "^1.17.0",
+    "date-fns": "^2.23.0",
     "formik": "^2.1.5",
     "formik-antd": "^2.0.1",
     "libphonenumber-js": "^1.9.20",
@@ -24,6 +28,7 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
+    "rwanda": "^2.1.2",
     "yup": "^0.29.3"
   },
   "scripts": {

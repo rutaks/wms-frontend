@@ -22,3 +22,7 @@ export const dob = Yup.string()
   .typeError('Invalid date')
   .required('DOB must be entered')
   .matches(isoDateRegex, 'Invalid date');
+
+export const containerVolume = Yup.number()
+  .typeError('Invalid container volume')
+  .required('Container volume is required');

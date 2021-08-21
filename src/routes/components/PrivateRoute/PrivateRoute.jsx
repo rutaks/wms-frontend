@@ -5,6 +5,7 @@ import ClientsView from '../../../views/ClientsView/ClientsView';
 import CreateClientView from '../../../views/CreateClientView';
 import { useHistory } from 'react-router-dom';
 import useAuth from '../../../context/Auth/useAuth';
+import ClientDetails from '../../../views/ClientDetails';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -24,14 +25,14 @@ const PrivateRoute = () => {
     <Fragment>
       <Sidebar>
         <Switch>
-          <Route exact path={'/test'}>
-            <div></div>
-          </Route>
           <Route exact path={'/clients'}>
             <ClientsView />
           </Route>
           <Route exact path={'/clients/new'}>
             <CreateClientView />
+          </Route>
+          <Route exact path={'/clients/:clientUuid'}>
+            <ClientDetails />
           </Route>
         </Switch>
       </Sidebar>
