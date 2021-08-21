@@ -5,7 +5,7 @@ import message from 'antd/lib/message';
 import ImgCrop from 'antd-img-crop';
 import './Upload.css';
 
-const Upload = ({ setFile, shouldClearImage, imgPlaceholder, crop, aspect }) => {
+const Upload = ({ setFile, shouldClearImage, imgPlaceholder, crop, aspect, style }) => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -39,7 +39,7 @@ const Upload = ({ setFile, shouldClearImage, imgPlaceholder, crop, aspect }) => 
 
   const UploadComponent = (
     <UploadImage
-      style={{ height: '120px' }}
+      style={style || { height: '120px' }}
       listType="picture-card"
       showUploadList={false}
       onChange={handleChange}

@@ -6,6 +6,8 @@ import CreateClientView from '../../../views/CreateClientView';
 import { useHistory } from 'react-router-dom';
 import useAuth from '../../../context/Auth/useAuth';
 import ClientDetails from '../../../views/ClientDetails';
+import AgentsView from '../../../views/AgentsView';
+import CreateAgentView from '../../../views/CreateAgentView/CreateAgentView';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -33,6 +35,12 @@ const PrivateRoute = () => {
           </Route>
           <Route exact path={'/clients/:clientUuid'}>
             <ClientDetails />
+          </Route>
+          <Route exact path={'/employees'}>
+            <AgentsView />
+          </Route>
+          <Route exact path={'/employees/new'}>
+            <CreateAgentView />
           </Route>
         </Switch>
       </Sidebar>
