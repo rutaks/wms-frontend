@@ -9,6 +9,7 @@ import ClientDetails from '../../../views/ClientDetails';
 import AgentsView from '../../../views/AgentsView';
 import CreateAgentView from '../../../views/CreateAgentView/CreateAgentView';
 import ReportsView from '../../../views/ReportsView';
+import DevicesView from '../../../views/DevicesView';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -45,6 +46,9 @@ const PrivateRoute = () => {
           </Route>
           <Route exact path={'/reports'}>
             <ReportsView />
+          </Route>
+          <Route exact path={'/devices'}>
+            <DevicesView />
           </Route>
         </Switch>
       </Sidebar>
