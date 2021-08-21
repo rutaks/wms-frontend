@@ -8,6 +8,7 @@ import useAuth from '../../../context/Auth/useAuth';
 import ClientDetails from '../../../views/ClientDetails';
 import AgentsView from '../../../views/AgentsView';
 import CreateAgentView from '../../../views/CreateAgentView/CreateAgentView';
+import ReportsView from '../../../views/ReportsView';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -41,6 +42,9 @@ const PrivateRoute = () => {
           </Route>
           <Route exact path={'/employees/new'}>
             <CreateAgentView />
+          </Route>
+          <Route exact path={'/reports'}>
+            <ReportsView />
           </Route>
         </Switch>
       </Sidebar>
