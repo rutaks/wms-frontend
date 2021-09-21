@@ -35,7 +35,7 @@ const getStatusColor = (status) => {
 
 console.log(data);
 
-const ClientsTable = () => {
+const ClientsTable = ({ items, pagination, goToPage }) => {
   const history = useHistory();
   return (
     <Fragment>
@@ -107,6 +107,16 @@ const ClientsTable = () => {
         <Row>
           <Button
             block
+            type="default"
+            onClick={() => {
+              history.push('/clients/new');
+            }}
+          >
+            DOWNLOAD CLIENT REPORT
+          </Button>
+          <br /> <br />
+          <Button
+            block
             type="primary"
             onClick={() => {
               history.push('/clients/new');
@@ -118,9 +128,12 @@ const ClientsTable = () => {
         <br />
         <Table
           pagination={{
-            pageSize: 10
+            total: pagination.totalItems,
+            current: pagination.currentPage,
+            showSizeChanger: false,
+            onChange: (p) => goToPage(p)
           }}
-          dataSource={data}
+          dataSource={items}
         >
           <Column title={'#'} render={(_, __, idx) => idx + 1} />
           <Column
@@ -132,8 +145,11 @@ const ClientsTable = () => {
               </Fragment>
             )}
           />
-          <Column title={'Current Address'} render={(record) => record.address} />
-          <Column title={'No Devices'} render={(record) => record.activeDevicesNo} />
+          <Column
+            title={'Current Address'}
+            render={(record) => record.deviceRentalDetails[0]?.location?.name || 'N/A'}
+          />
+          <Column title={'No Devices'} render={(record) => record.deviceRentalDetails.length} />
           <Column
             title={'Acc. Status'}
             render={(record, idx) => (
@@ -151,7 +167,7 @@ const ClientsTable = () => {
                 <EditOutlined onClick={() => {}} />
                 <UnorderedListOutlined
                   onClick={() => {
-                    history.push('/clients/1740ef5c-c43c-419d-beac-564b946a8538');
+                    history.push(`/clients/${record.uuid}`);
                   }}
                 />
                 <DeleteOutlined onClick={() => {}} />

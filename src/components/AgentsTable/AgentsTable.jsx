@@ -33,14 +33,17 @@ const getStatusColor = (status) => {
   if (status === 'DISABLED') return 'red';
 };
 
-const AgentsTable = () => {
+const AgentsTable = ({ items, pagination, goToPage }) => {
   const history = useHistory();
   return (
     <Table
       pagination={{
-        pageSize: 10
+        total: pagination.totalItems,
+        current: pagination.currentPage,
+        showSizeChanger: false,
+        onChange: (p) => goToPage(p)
       }}
-      dataSource={data}
+      dataSource={items}
     >
       <Column title={'#'} render={(_, __, idx) => idx + 1} />
       <Column
@@ -53,12 +56,12 @@ const AgentsTable = () => {
         )}
       />
       <Column title={'Email'} render={(record) => record.email} />
-      <Column title={'Phone No.'} render={(record) => record.phoneNo} />
+      <Column title={'Phone No.'} render={(record) => record.phoneNumber} />
       <Column
         title={'Status'}
         render={(record, idx) => (
-          <Tag color={getStatusColor(record.accountStatus)} key={idx}>
-            {record.accountStatus}
+          <Tag color={getStatusColor(record.employeeRole)} key={idx}>
+            {record.employeeRole}
           </Tag>
         )}
       />
@@ -75,12 +78,12 @@ const AgentsTable = () => {
         title={'Action'}
         render={(record) => (
           <Row style={{ justifyContent: 'space-evenly' }}>
-            <EditOutlined onClick={() => {}} />
-            <UnorderedListOutlined
+            {/* <EditOutlined onClick={() => {}} /> */}
+            {/* <UnorderedListOutlined
               onClick={() => {
                 history.push('/clients/1740ef5c-c43c-419d-beac-564b946a8538');
               }}
-            />
+            /> */}
             <DeleteOutlined onClick={() => {}} />
           </Row>
         )}

@@ -34,7 +34,7 @@ const getStatusColor = (status) => {
   if (status === 'DISABLED') return 'red';
 };
 
-const ReportsTable = () => {
+const ReportsTable = ({ items, pagination, goToPage }) => {
   const history = useHistory();
   const [isLinkDeviceToClientModal, setIsLinkDeviceToClientModal] = useState(false);
   return (
@@ -46,9 +46,12 @@ const ReportsTable = () => {
       />
       <Table
         pagination={{
-          pageSize: 10
+          total: pagination.totalItems,
+          current: pagination.currentPage,
+          showSizeChanger: false,
+          onChange: (p) => goToPage(p)
         }}
-        dataSource={data}
+        dataSource={items}
       >
         <Column title={'#'} render={(_, __, idx) => idx + 1} />
         <Column
@@ -65,7 +68,7 @@ const ReportsTable = () => {
           render={(record, idx) => (
             <Fragment>
               <HistoryOutlined style={{ paddingRight: '12px' }} />
-              {new Date(record.reportedDate).toUTCString()}
+              {new Date(record.createdOn).toUTCString()}
             </Fragment>
           )}
         />
@@ -77,8 +80,13 @@ const ReportsTable = () => {
             </Tag>
           )}
         />
-        <Column title={'Reported By'} render={(record) => record.reportedBy} />
-        <Column title={'Location'} render={(record) => record.location} />
+        <Column
+          title={'Reported By'}
+          render={(record) =>
+            `${record.deviceRentalDetails.owner.firstName} ${record.deviceRentalDetails.owner.lastName}`
+          }
+        />
+        <Column title={'Location'} render={(record) => record.deviceRentalDetails?.location?.name} />
         <Column
           title={'Status'}
           render={(record, idx) => (

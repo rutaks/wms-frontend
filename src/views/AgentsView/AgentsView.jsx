@@ -1,10 +1,32 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Breadcrumb, Button, Card, Col, Row, Statistic, Table, Tag } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import AgentsTable from '../../components/AgentsTable/AgentsTable';
+import useGetEmployees from '../../hooks/api/employees/useGetEmployees';
+import useHandleApiState from '../../hooks/useHandleApiState';
 
 const AgentsView = () => {
   const history = useHistory();
+  const getEmployees = useGetEmployees();
+  const [agents, setAgents] = useState([]);
+  const [pagination, setPagination] = useState({});
+
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    getEmployees.sendRequest({ page });
+  }, [page]);
+
+  const goToPage = (p) => {
+    setPage(p);
+  };
+
+  useHandleApiState(getEmployees, {
+    onSuccess: (res) => {
+      setAgents(res.payload.data);
+      setPagination(res.payload.meta);
+    }
+  });
+
   return (
     <Fragment>
       <Row style={{ paddingTop: '24px', marginLeft: '24px' }}>
@@ -62,7 +84,7 @@ const AgentsView = () => {
           </Button>
         </Row>
         <br />
-        <AgentsTable />
+        <AgentsTable items={agents} pagination={pagination} goToPage={goToPage} />
       </Card>
     </Fragment>
   );

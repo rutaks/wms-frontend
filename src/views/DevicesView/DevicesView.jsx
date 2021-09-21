@@ -1,10 +1,31 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Breadcrumb, Button, Card, Col, Row, Statistic } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import DevicesTable from '../../components/DevicesTable';
+import useGetDevices from '../../hooks/api/devices/useGetDevices';
+import useHandleApiState from '../../hooks/useHandleApiState';
 
 const DevicesView = () => {
   const history = useHistory();
+  const getDevices = useGetDevices();
+  const [devices, setDevices] = useState([]);
+  const [pagination, setPagination] = useState({});
+
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    getDevices.sendRequest({ page });
+  }, [page]);
+
+  const goToPage = (p) => {
+    setPage(p);
+  };
+
+  useHandleApiState(getDevices, {
+    onSuccess: (res) => {
+      setDevices(res.payload.data);
+      setPagination(res.payload.meta);
+    }
+  });
   return (
     <Fragment>
       <Row style={{ paddingTop: '24px', marginLeft: '24px' }}>
@@ -46,7 +67,7 @@ const DevicesView = () => {
           </Col>
         </Row>
         <br />
-        <DevicesTable />
+        <DevicesTable items={devices} pagination={pagination} goToPage={goToPage} />
       </Card>
     </Fragment>
   );

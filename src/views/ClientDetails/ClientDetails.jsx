@@ -46,32 +46,32 @@ const routes = [
 
 const pieData = [
   {
-    id: 'erlang',
-    label: 'erlang',
+    id: 'AXSS-FF',
+    label: 'AXSS-FF',
     value: 335,
     color: 'hsl(157, 70%, 50%)'
   },
   {
-    id: 'hack',
-    label: 'hack',
+    id: 'BDSS-FF',
+    label: 'BDSS-FF',
     value: 172,
     color: 'hsl(174, 70%, 50%)'
   },
   {
-    id: 'css',
-    label: 'css',
+    id: 'ASDL-FF',
+    label: 'ASDL-FF',
     value: 211,
     color: 'hsl(44, 70%, 50%)'
   },
   {
-    id: 'php',
-    label: 'php',
+    id: 'VDEF-GG',
+    label: 'VDEF-GG',
     value: 195,
     color: 'hsl(309, 70%, 50%)'
   },
   {
-    id: 'java',
-    label: 'java',
+    id: 'KFLSS-II',
+    label: 'KFLSS-II',
     value: 255,
     color: 'hsl(181, 70%, 50%)'
   }
@@ -199,6 +199,16 @@ const ClientDetails = () => {
                 </Col>
               </Row>
               <Divider dashed />
+              <Button
+                block
+                type="default"
+                onClick={() => {
+                  // history.push('/clients/new');
+                }}
+              >
+                DOWNLOAD CLIENT'S REPORT
+              </Button>
+              <br /> <br />
             </Content>
           </PageHeader>
         </Fragment>
@@ -242,31 +252,31 @@ const ClientDetails = () => {
               }}
               dataSource={[
                 {
-                  code: 'ZZZZZ',
+                  code: 'AXSS-FF',
                   status: 'ACTIVE',
                   date: '2021-08-12T08:17:12.479Z',
                   location: 'Kigali, Akakaza'
                 },
                 {
-                  code: 'ZZZZZ',
+                  code: 'BDSS-FF',
                   status: 'ACTIVE',
                   date: '2021-08-12T08:17:12.479Z',
                   location: 'Kigali, Akakaza'
                 },
                 {
-                  code: 'ZZZZZ',
+                  code: 'ASDL-FF',
                   status: 'ACTIVE',
                   date: '2021-08-12T08:17:12.479Z',
                   location: 'Kigali, Akakaza'
                 },
                 {
-                  code: 'ZZZZZ',
+                  code: 'VDEF-GG',
                   status: 'ACTIVE',
                   date: '2021-08-12T08:17:12.479Z',
                   location: 'Kigali, Akakaza'
                 },
                 {
-                  code: 'ZZZZZ',
+                  code: 'KFLSS-II',
                   status: 'ACTIVE',
                   date: '2021-08-12T08:17:12.479Z',
                   location: 'Kigali, Akakaza'
@@ -329,49 +339,31 @@ const ClientDetails = () => {
                 fill={[
                   {
                     match: {
-                      id: 'ruby'
+                      id: 'AXSS-FF'
                     },
                     id: 'dots'
                   },
                   {
                     match: {
-                      id: 'c'
+                      id: 'BDSS-FF'
                     },
                     id: 'dots'
                   },
                   {
                     match: {
-                      id: 'go'
+                      id: 'ASDL-FF'
                     },
                     id: 'dots'
                   },
                   {
                     match: {
-                      id: 'python'
+                      id: 'VDEF-GG'
                     },
                     id: 'dots'
                   },
                   {
                     match: {
-                      id: 'scala'
-                    },
-                    id: 'lines'
-                  },
-                  {
-                    match: {
-                      id: 'lisp'
-                    },
-                    id: 'lines'
-                  },
-                  {
-                    match: {
-                      id: 'elixir'
-                    },
-                    id: 'lines'
-                  },
-                  {
-                    match: {
-                      id: 'javascript'
+                      id: 'KFLSS-II'
                     },
                     id: 'lines'
                   }

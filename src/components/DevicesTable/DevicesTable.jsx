@@ -34,7 +34,7 @@ const getStatusColor = (status) => {
   if (status === 'DISABLED') return 'red';
 };
 
-const DevicesTable = () => {
+const DevicesTable = ({ items, pagination, goToPage }) => {
   const history = useHistory();
   const [isLinkDeviceToClientModal, setIsLinkDeviceToClientModal] = useState(false);
   return (
@@ -46,9 +46,12 @@ const DevicesTable = () => {
       />
       <Table
         pagination={{
-          pageSize: 10
+          total: pagination.totalItems,
+          current: pagination.currentPage,
+          showSizeChanger: false,
+          onChange: (p) => goToPage(p)
         }}
-        dataSource={data}
+        dataSource={items}
       >
         <Column title={'#'} render={(_, __, idx) => idx + 1} />
         <Column
@@ -65,7 +68,7 @@ const DevicesTable = () => {
           render={(record, idx) => (
             <Fragment>
               <HistoryOutlined style={{ paddingRight: '12px' }} />
-              {new Date(record.lastActiveTime).toUTCString()}
+              {new Date(record.lastUpdatedOn).toUTCString()}
             </Fragment>
           )}
         />
@@ -77,8 +80,13 @@ const DevicesTable = () => {
             </Tag>
           )}
         />
-        <Column title={'Current Owner'} render={(record) => record.currentOwner} />
-        <Column title={'Cubic meter used'} render={(record) => record.usage} />
+        <Column
+          title={'Current Owner'}
+          render={(record) =>
+            `${record.deviceRentalDetails[0].owner.firstName} ${record.deviceRentalDetails[0].owner.lastName}`
+          }
+        />
+        <Column title={'Cubic meter used'} render={(record) => '300m'} />
         <Column
           title={'Action'}
           render={(record) => (

@@ -1,11 +1,33 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Breadcrumb, Button, Card, Col, Row, Statistic, Table, Tag } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import AgentsTable from '../../components/AgentsTable/AgentsTable';
 import ReportsTable from '../../components/ReportsTable';
+import useGetReports from '../../hooks/api/reports/useGetReports';
+import { useEffect } from 'react';
+import useHandleApiState from '../../hooks/useHandleApiState';
 
 const ReportsView = () => {
   const history = useHistory();
+  const getReports = useGetReports();
+  const [reports, setReports] = useState([]);
+  const [pagination, setPagination] = useState({});
+
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    getReports.sendRequest({ page });
+  }, [page]);
+
+  const goToPage = (p) => {
+    setPage(p);
+  };
+
+  useHandleApiState(getReports, {
+    onSuccess: (res) => {
+      setReports(res.payload.data);
+      setPagination(res.payload.meta);
+    }
+  });
   return (
     <Fragment>
       <Row style={{ paddingTop: '24px', marginLeft: '24px' }}>
@@ -52,7 +74,7 @@ const ReportsView = () => {
           </Col>
         </Row>
         <br />
-        <ReportsTable />
+        <ReportsTable items={reports} pagination={pagination} goToPage={goToPage} />
       </Card>
     </Fragment>
   );

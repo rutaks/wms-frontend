@@ -67,7 +67,7 @@ const Sidebar = ({ children }) => {
             className: 'trigger',
             onClick: toggle
           })}
-          <div style={{ float: 'right', paddingRight: '24px' }}>
+          <div style={{ float: 'right' }}>
             <Dropdown
               overlay={
                 <Menu>
@@ -86,7 +86,7 @@ const Sidebar = ({ children }) => {
                 </Menu>
               }
             >
-              <a href="/" className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+              <a href="/" onClick={(e) => e.preventDefault()}>
                 <Row>
                   <Col style={{ paddingRight: '12px' }}>
                     <Avatar shape="square" size="small" icon={<UserOutlined />} />
