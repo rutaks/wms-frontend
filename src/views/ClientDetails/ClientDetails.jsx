@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   PageHeader,
   Button,
@@ -28,6 +28,11 @@ import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
 import { format } from 'date-fns';
 import LinkDeviceToClientModal from '../../components/LinkDeviceToClientModal';
+import useGetClientDetails from '../../hooks/api/clients/useGetClientDetails';
+import useHandleApiState from '../../hooks/useHandleApiState';
+import { useParams } from 'react-router';
+import useGetClientDevices from '../../hooks/api/clients/useGetClientDevices';
+import useGetUsageByDeviceAndOwner from '../../hooks/api/clients/useGetUsageByDeviceAndOwner';
 
 const routes = [
   {
@@ -112,12 +117,61 @@ const getStatusIconFromLevel = (level) => {
   }
 };
 
-const ClientDetails = () => {
+const ClientDetails = (props) => {
+  let { clientUuid } = useParams();
+  const [devicesPage, setDevicesPage] = useState(1);
+  const getClientDetails = useGetClientDetails();
+  const getClientDevices = useGetClientDevices();
+  const getUsageByDeviceAndOwner = useGetUsageByDeviceAndOwner();
+  const [clientDetails, setClientDetails] = useState([]);
+  const [clientDevices, setClientDevices] = useState({ data: [], meta: {} });
+  const [deviceUsages, setDeviceUsages] = useState({ data: [], meta: {} });
   const [isLinkDeviceToClientModal, setIsLinkDeviceToClientModal] = useState(false);
+
+  useEffect(() => {
+    getClientDevices.sendRequest({ uuid: clientUuid, page: devicesPage });
+  }, [devicesPage]);
+
+  useEffect(() => {
+    getClientDetails.sendRequest({ uuid: clientUuid });
+  }, []);
+
+  useEffect(() => {
+    if (clientDevices.data.length > 0) {
+      getUsageByDeviceAndOwner.sendRequest({
+        ownerUuid: clientUuid,
+        deviceCode: clientDevices.data[0]?.code
+      });
+    }
+  }, [clientDevices.data]);
+
+  useHandleApiState(getClientDetails, {
+    onSuccess: (res) => {
+      setClientDetails(res.payload);
+    }
+  });
+
+  useHandleApiState(getClientDevices, {
+    onSuccess: (res) => {
+      setClientDevices(res.payload);
+    }
+  });
+
+  useHandleApiState(getUsageByDeviceAndOwner, {
+    onSuccess: (res) => {
+      setDeviceUsages(res.payload);
+    }
+  });
   return (
     <Fragment>
       <Row style={{ paddingTop: '24px', marginInline: '24px' }}>
         <LinkDeviceToClientModal
+          onSuccess={() => {
+            setDevicesPage(1);
+            getClientDevices.sendRequest({ uuid: clientUuid, page: devicesPage });
+            setIsLinkDeviceToClientModal(false);
+          }}
+          clientUuid={clientUuid}
           isModalVisible={isLinkDeviceToClientModal}
           onOk={() => setIsLinkDeviceToClientModal(false)}
           onCancel={() => setIsLinkDeviceToClientModal(false)}
@@ -126,8 +180,8 @@ const ClientDetails = () => {
           <PageHeader
             ghost={false}
             onBack={() => window.history.back()}
-            title="Sam's details"
-            subTitle="The details and usages of Sam Rutakayile"
+            title={`${clientDetails.firstName}'s details`}
+            subTitle={`The details and usages of ${clientDetails.firstName} ${clientDetails.lastName}`}
             breadcrumb={{ routes }}
             extra={[
               <Button type="default" style={{ color: '#ffaa00', borderColor: '#ffaa00' }}>
@@ -162,7 +216,7 @@ const ClientDetails = () => {
                         prefix={<ArrowUpOutlined />}
                         valueStyle={{ color: '#3498eb' }}
                         suffix="m³"
-                        value={12000.08}
+                        value={Math.floor(Math.random() * 10000)}
                       />
                     </div>
                   </Col>
@@ -187,14 +241,16 @@ const ClientDetails = () => {
                 </Col>
                 <Col span={22}>
                   <Descriptions size="small" column={4}>
-                    <Descriptions.Item label="Full names">Samuel Rutakayile</Descriptions.Item>
+                    <Descriptions.Item label="Full names">{`${clientDetails.firstName} ${clientDetails.lastName}`}</Descriptions.Item>
                     <Descriptions.Item label="Unique Identifier">
-                      <a>1740ef5c-c43c-419d-beac-564b946a8538</a>
+                      <a>{clientDetails.uuid}</a>
                     </Descriptions.Item>
-                    <Descriptions.Item label="Email">rutaksam@gmail.com</Descriptions.Item>
-                    <Descriptions.Item label="Phone No.">+250782697954</Descriptions.Item>
-                    <Descriptions.Item label="Creation Time">2017-01-10</Descriptions.Item>
-                    <Descriptions.Item label="Effective Time">2017-10-10</Descriptions.Item>
+                    <Descriptions.Item label="Email">{clientDetails.email}</Descriptions.Item>
+                    <Descriptions.Item label="Phone No.">{clientDetails.phoneNumber}</Descriptions.Item>
+                    <Descriptions.Item label="Creation Time">{clientDetails.createdOn}</Descriptions.Item>
+                    <Descriptions.Item label="Effective Time">
+                      {clientDetails.lastUpdatedOn}
+                    </Descriptions.Item>
                   </Descriptions>
                 </Col>
               </Row>
@@ -222,14 +278,19 @@ const ClientDetails = () => {
       >
         <Row>
           <Col span={5}>
-            <Title level={3}>Usage Timeline</Title>
+            <Title level={3}>Usage Timeline ({clientDevices?.data[0]?.code})</Title>
             <br />
             <Timeline>
-              {usage.map((u) => (
-                <Timeline.Item dot={getStatusIconFromLevel(u.level)} color={getColorFromLevel(u.level)}>
-                  <b>{u.level} %</b>
+              {deviceUsages.data.map((u) => (
+                <Timeline.Item
+                  dot={getStatusIconFromLevel(u.levelReached)}
+                  color={getColorFromLevel(u.levelReached)}
+                >
+                  <b>{u.levelReached} %</b>
                   <br />
-                  <span style={{ color: '#b0b0b0' }}>{format(new Date(u.date), 'MM/dd/yyyy HH:mm')}</span>
+                  <span style={{ color: '#b0b0b0' }}>
+                    {format(new Date(u.createdOn), 'MM/dd/yyyy HH:mm')}
+                  </span>
                 </Timeline.Item>
               ))}
             </Timeline>
@@ -245,49 +306,25 @@ const ClientDetails = () => {
               className="demo-loadmore-list"
               itemLayout="horizontal"
               pagination={{
-                onChange: (page) => {
-                  console.log(page);
-                },
-                pageSize: 5
+                total: clientDevices.meta?.totalItems,
+                current: clientDevices.meta?.currentPage,
+                showSizeChanger: false,
+                onChange: (p) => setDevicesPage(p)
               }}
-              dataSource={[
-                {
-                  code: 'AXSS-FF',
-                  status: 'ACTIVE',
-                  date: '2021-08-12T08:17:12.479Z',
-                  location: 'Kigali, Akakaza'
-                },
-                {
-                  code: 'BDSS-FF',
-                  status: 'ACTIVE',
-                  date: '2021-08-12T08:17:12.479Z',
-                  location: 'Kigali, Akakaza'
-                },
-                {
-                  code: 'ASDL-FF',
-                  status: 'ACTIVE',
-                  date: '2021-08-12T08:17:12.479Z',
-                  location: 'Kigali, Akakaza'
-                },
-                {
-                  code: 'VDEF-GG',
-                  status: 'ACTIVE',
-                  date: '2021-08-12T08:17:12.479Z',
-                  location: 'Kigali, Akakaza'
-                },
-                {
-                  code: 'KFLSS-II',
-                  status: 'ACTIVE',
-                  date: '2021-08-12T08:17:12.479Z',
-                  location: 'Kigali, Akakaza'
-                }
-              ]}
+              dataSource={clientDevices.data.map((cd) => ({
+                code: cd.code,
+                status: cd.status,
+                date: cd.createdOn,
+                location: `${cd?.deviceRentalDetails[0]?.location?.name || ''} (${
+                  cd?.deviceRentalDetails[0]?.location?.type || ''
+                })`
+              }))}
               renderItem={(item) => (
                 <List.Item
                   actions={[
-                    <Tag color="green">{item.status}</Tag>,
-                    <DisconnectOutlined onClick={() => {}} />,
-                    <EditOutlined onClick={() => {}} />
+                    <Tag color="green">{item.status}</Tag>
+                    // <DisconnectOutlined onClick={() => {}} />,
+                    // <EditOutlined onClick={() => {}} />
                   ]}
                 >
                   <List.Item.Meta

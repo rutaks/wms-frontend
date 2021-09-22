@@ -1,19 +1,28 @@
 import React, { Fragment } from 'react';
-import { Button, Col, Form, InputNumber, message, Row, Select } from 'antd';
+import { Button, Col, Form, Input, InputNumber, message, Row, Select } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import Text from 'antd/lib/typography/Text';
 import { Formik } from 'formik';
-import { SlidersOutlined } from '@ant-design/icons';
 import { useSetLocations } from '../../hooks/useLocation';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
 import {
   linkDeviceToClientInitialValues,
   linkDeviceToClientValidationSchema
 } from '../../validations/link-device-to-client.validation';
+import useCreateAndAssignDevice from '../../hooks/api/devices/useCreateAndAssignDevice';
+import useHandleApiState from '../../hooks/useHandleApiState';
 const { Provinces, Districts, Sectors, Cells, Villages } = require('rwanda');
 
-const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel }) => {
+const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel, onSuccess, clientUuid }) => {
   const locationHook = useSetLocations();
+  const createAndAssignDevice = useCreateAndAssignDevice();
+
+  useHandleApiState(createAndAssignDevice, {
+    onSuccess: () => {
+      onSuccess && onSuccess();
+    },
+    onError: () => message.error('An Error occured')
+  });
   return (
     <Modal
       title="Link a device to client"
@@ -24,12 +33,13 @@ const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel }) => {
     >
       <Formik
         initialValues={linkDeviceToClientInitialValues}
-        validationSchema={linkDeviceToClientValidationSchema}
+        // validationSchema={linkDeviceToClientValidationSchema}
         onSubmit={(formikData) => {
           if (!locationHook.village) {
             message.error("Select the device's location");
           }
-          console.log(formikData);
+          const deviceInfo = { ...formikData, clientUuid, locationDto: locationHook.mapLocationHierarchy() };
+          createAndAssignDevice.sendRequest({ data: deviceInfo });
         }}
       >
         {(formikProps) => (
@@ -43,10 +53,9 @@ const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel }) => {
                 >
                   <InputNumber
                     value={formikProps.values.containerVolume}
-                    onChange={formikProps.handleChange('containerVolume')}
+                    onChange={(v) => formikProps.setFieldValue('containerVolume', v)}
                     style={{ width: '100%' }}
                     size="large"
-                    onChange={() => {}}
                   />
                 </Form.Item>
               </Col>
@@ -55,15 +64,14 @@ const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel }) => {
               <Col span={24}>
                 <Text strong>Address:</Text>
                 <Form.Item
-                  validateStatus={getValidationStatus(formikProps, 'containerVolume')}
-                  help={getHelp(formikProps, 'containerVolume')}
+                  validateStatus={getValidationStatus(formikProps, 'locationCoordinates')}
+                  help={getHelp(formikProps, 'locationCoordinates')}
                 >
-                  <InputNumber
-                    value={formikProps.values.containerVolume}
-                    onChange={formikProps.handleChange('containerVolume')}
+                  <Input
+                    value={formikProps.values.locationCoordinates}
+                    onChange={formikProps.handleChange('locationCoordinates')}
                     style={{ width: '100%' }}
                     size="large"
-                    onChange={() => {}}
                   />
                 </Form.Item>
               </Col>
@@ -206,27 +214,7 @@ const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel }) => {
                 </Form.Item>
               </Col>
             </Row>
-            <Row>
-              <Col span={20}>
-                <Text strong>Address:</Text>
-                <Form.Item
-                  validateStatus={getValidationStatus(formikProps, 'containerVolume')}
-                  help={getHelp(formikProps, 'containerVolume')}
-                >
-                  <InputNumber
-                    value={formikProps.values.containerVolume}
-                    onChange={formikProps.handleChange('containerVolume')}
-                    style={{ width: '100%' }}
-                    size="large"
-                    onChange={() => {}}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={2} offset={1} style={{ alignSelf: 'center' }}>
-                <Button type="primary" style={{ height: '40px' }} icon={<SlidersOutlined />} />
-              </Col>
-            </Row>
-            <Button type="primary" block onSubmit={() => formikProps.handleSubmit()}>
+            <Button type="primary" block onClick={() => formikProps.handleSubmit()}>
               LINK
             </Button>
           </Fragment>

@@ -18,6 +18,18 @@ const ClientsView = () => {
     setPage(p);
   };
 
+  const refreshPage = (p) => {
+    if (p) {
+      if (p === page) {
+        getClients.sendRequest({ page });
+      } else {
+        setPage(p);
+      }
+    } else {
+      getClients.sendRequest({ page });
+    }
+  };
+
   useHandleApiState(getClients, {
     onSuccess: (res) => {
       setClients(res.payload.data);
@@ -25,7 +37,15 @@ const ClientsView = () => {
     }
   });
 
-  return <ClientsTable items={clients} pagination={pagination} goToPage={goToPage} />;
+  return (
+    <ClientsTable
+      items={clients}
+      pagination={pagination}
+      goToPage={goToPage}
+      onRefresh={refreshPage}
+      isDataTableLoading={getClients.isLoading}
+    />
+  );
 };
 
 export default ClientsView;

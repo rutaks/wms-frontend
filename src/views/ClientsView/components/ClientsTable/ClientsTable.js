@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Card, Col, Row, Statistic, Table, Tag } from 'antd';
+import { Breadcrumb, Button, Card, Col, message, Row, Spin, Statistic, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
 import {
   EditOutlined,
@@ -11,6 +11,9 @@ import React, { Fragment } from 'react';
 import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
 import { Link, useHistory } from 'react-router-dom';
+import useResendVerificationCode from '../../../../hooks/api/clients/useResendVerificationCode';
+import useHandleApiState from '../../../../hooks/useHandleApiState';
+import { getErrorFromUnknown } from '../../../../util/error.util';
 
 const statuses = ['PENDING', 'ACTIVE', 'DISABLED'];
 
@@ -33,10 +36,20 @@ const getStatusColor = (status) => {
   if (status === 'DISABLED') return 'red';
 };
 
-console.log(data);
-
-const ClientsTable = ({ items, pagination, goToPage }) => {
+const ClientsTable = ({ items, pagination, goToPage, onRefresh, isDataTableLoading }) => {
   const history = useHistory();
+  const resendVerificationCode = useResendVerificationCode();
+
+  useHandleApiState(resendVerificationCode, {
+    onSuccess: () => {
+      message.success('Verification Code successfully resent');
+      onRefresh();
+    },
+    onError: (error) => {
+      getErrorFromUnknown(error);
+    }
+  });
+
   return (
     <Fragment>
       <Row style={{ paddingTop: '24px', marginLeft: '24px' }}>
@@ -126,56 +139,68 @@ const ClientsTable = ({ items, pagination, goToPage }) => {
           </Button>
         </Row>
         <br />
-        <Table
-          pagination={{
-            total: pagination.totalItems,
-            current: pagination.currentPage,
-            showSizeChanger: false,
-            onChange: (p) => goToPage(p)
-          }}
-          dataSource={items}
-        >
-          <Column title={'#'} render={(_, __, idx) => idx + 1} />
-          <Column
-            title={'Names'}
-            render={(record) => (
-              <Fragment>
-                <Avatar icon={<UserOutlined />} />
-                <span style={{ marginLeft: '12px' }}>{`${record?.firstName} ${record?.lastName}`}</span>
-              </Fragment>
-            )}
-          />
-          <Column
-            title={'Current Address'}
-            render={(record) => record.deviceRentalDetails[0]?.location?.name || 'N/A'}
-          />
-          <Column title={'No Devices'} render={(record) => record.deviceRentalDetails.length} />
-          <Column
-            title={'Acc. Status'}
-            render={(record, idx) => (
-              <Tag color={getStatusColor(record.accountStatus)} key={idx}>
-                {record.accountStatus}
-              </Tag>
-            )}
-          />
-          <Column title={'Joined date'} render={(record) => new Date(record.createdOn).toUTCString()} />
+        <Spin spinning={resendVerificationCode.isLoading || isDataTableLoading}>
+          <Table
+            pagination={{
+              total: pagination.totalItems,
+              current: pagination.currentPage,
+              showSizeChanger: false,
+              onChange: (p) => goToPage(p)
+            }}
+            dataSource={items}
+          >
+            <Column title={'#'} render={(_, __, idx) => idx + 1} />
+            <Column
+              title={'Names'}
+              render={(record) => (
+                <Fragment>
+                  <Avatar icon={<UserOutlined />} />
+                  <span style={{ marginLeft: '12px' }}>{`${record?.firstName} ${record?.lastName}`}</span>
+                </Fragment>
+              )}
+            />
+            <Column
+              title={'Current Address'}
+              render={(record) => record.deviceRentalDetails[0]?.location?.name || 'N/A'}
+            />
+            <Column title={'No Devices'} render={(record) => record.deviceRentalDetails.length} />
+            <Column
+              title={'Acc. Status'}
+              render={(record, idx) => (
+                <Tag color={getStatusColor(record.accountStatus)} key={idx}>
+                  {record.accountStatus}
+                </Tag>
+              )}
+            />
+            <Column title={'Joined date'} render={(record) => new Date(record.createdOn).toUTCString()} />
 
-          <Column
-            title={'Action'}
-            render={(record) => (
-              <Row style={{ justifyContent: 'space-evenly' }}>
-                <EditOutlined onClick={() => {}} />
-                <UnorderedListOutlined
-                  onClick={() => {
-                    history.push(`/clients/${record.uuid}`);
-                  }}
-                />
-                <DeleteOutlined onClick={() => {}} />
-                <SyncOutlined />
-              </Row>
-            )}
-          />
-        </Table>
+            <Column
+              title={'Action'}
+              render={(record) => (
+                <Row style={{ justifyContent: 'space-evenly' }}>
+                  {/* <EditOutlined onClick={() => {}} /> */}
+                  <UnorderedListOutlined
+                    onClick={() => {
+                      history.push(`/clients/${record.uuid}`);
+                    }}
+                  />
+                  <DeleteOutlined onClick={() => {}} />
+                  {record.accountStatus === 'PENDING' && (
+                    <SyncOutlined
+                      onClick={() => {
+                        if (record.email) {
+                          resendVerificationCode.sendRequest({ email: record.email });
+                        } else {
+                          message.error('Client does not have an email, can not resend verification');
+                        }
+                      }}
+                    />
+                  )}
+                </Row>
+              )}
+            />
+          </Table>
+        </Spin>
       </Card>
     </Fragment>
   );
