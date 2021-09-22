@@ -29,7 +29,8 @@ for (let i = 0; i < 46; i++) {
 }
 
 const getStatusColor = (status) => {
-  if (status === 'ASSIGNED') return 'green';
+  if (status === 'PENDING') return '#f2c11d';
+  if (status === 'ACTIVE') return 'green';
   if (status === 'DISABLED') return 'red';
 };
 
@@ -55,13 +56,21 @@ const AgentsTable = ({ items, pagination, goToPage }) => {
           </Fragment>
         )}
       />
-      <Column title={'Email'} render={(record) => record.email} />
-      <Column title={'Phone No.'} render={(record) => record.phoneNumber} />
+      <Column title={'Email'} render={(record) => record.email || 'N/A'} />
+      <Column title={'Phone No.'} render={(record) => record.phoneNumber || 'N/A'} />
       <Column
-        title={'Status'}
+        title={'Role'}
         render={(record, idx) => (
           <Tag color={getStatusColor(record.employeeRole)} key={idx}>
             {record.employeeRole}
+          </Tag>
+        )}
+      />
+      <Column
+        title={'Role'}
+        render={(record, idx) => (
+          <Tag color={getStatusColor(record.accountStatus)} key={idx}>
+            {record.accountStatus}
           </Tag>
         )}
       />
