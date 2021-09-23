@@ -26,3 +26,8 @@ export const dob = Yup.string()
 export const containerVolume = Yup.number()
   .typeError('Invalid container volume')
   .required('Container volume is required');
+
+export const employeeRole = Yup.mixed()
+  .typeError('Role is required')
+  .required('Role is required')
+  .oneOf(['ADMIN', 'FIELD_AGENT']);

@@ -35,7 +35,6 @@ const getStatusColor = (status) => {
 };
 
 const AgentsTable = ({ items, pagination, goToPage }) => {
-  const history = useHistory();
   return (
     <Table
       pagination={{
@@ -51,7 +50,11 @@ const AgentsTable = ({ items, pagination, goToPage }) => {
         title={'Names'}
         render={(record) => (
           <Fragment>
-            <Avatar icon={<UserOutlined />} />
+            {record.profilePictureUrl ? (
+              <Avatar src={record.profilePictureUrl} />
+            ) : (
+              <Avatar icon={<UserOutlined />} />
+            )}
             <span style={{ marginLeft: '12px' }}>{`${record?.firstName} ${record?.lastName}`}</span>
           </Fragment>
         )}

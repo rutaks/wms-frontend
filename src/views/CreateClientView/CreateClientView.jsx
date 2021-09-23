@@ -9,8 +9,8 @@ import { getErrorFromUnknown } from '../../util/error.util';
 
 const CreateClientView = () => {
   const history = useHistory();
-  const createClient = useCreateClient();
   const [isUploading, setIsUploading] = useState(false);
+  const createClient = useCreateClient();
   useHandleApiState(createClient, {
     onSuccess: () => {
       message.success('Client created, he will receive a confirmation email shortly');

@@ -1,10 +1,23 @@
-import { Breadcrumb, Card, Col, Divider, PageHeader, Row } from 'antd';
+import { Breadcrumb, Card, Col, Divider, message, PageHeader, Row } from 'antd';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import AgentForm from '../../components/AgentForm';
+import useCreateEmployee from '../../hooks/api/employees/useCreateEmployee';
+import useHandleApiState from '../../hooks/useHandleApiState';
+import { uploadImage } from '../../util/cloudinary.util';
+import { getErrorFromUnknown } from '../../util/error.util';
 
 const CreateAgentView = () => {
   const history = useHistory();
+  const createEmployee = useCreateEmployee();
+  const [isUploading, setIsUploading] = useState(false);
+  useHandleApiState(createEmployee, {
+    onSuccess: () => {
+      message.success('Employee created, he will receive a confirmation email shortly');
+      history.goBack();
+    },
+    onError: (error) => message.error(getErrorFromUnknown(error))
+  });
 
   return (
     <Col style={{ marginBottom: '12px' }} offset={4} xs={24} sm={16} md={16} lg={16} xl={16}>
@@ -44,7 +57,25 @@ const CreateAgentView = () => {
           subTitle="Fill in the necessary info"
         />
         <Divider />
-        <AgentForm isSubmitting={false} isUploadingImg={false} onSubmit={() => {}} />
+        <AgentForm
+          isSubmitting={createEmployee.isLoading || isUploading}
+          isUploadingImg={isUploading}
+          onSubmit={async (formData) => {
+            let profilePictureUrl;
+            if (formData.profilePictureUrl) {
+              try {
+                setIsUploading(true);
+                profilePictureUrl = await uploadImage(formData.profilePictureUrl);
+                setIsUploading(false);
+              } catch (error) {
+                message.error(error.message);
+                setIsUploading(false);
+                return;
+              }
+            }
+            createEmployee.sendRequest({ data: { ...formData, profilePictureUrl: profilePictureUrl?.url } });
+          }}
+        />
       </Card>
       <br />
       <br />

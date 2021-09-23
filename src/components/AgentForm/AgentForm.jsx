@@ -1,20 +1,19 @@
 import React, { Fragment } from 'react';
 import { Formik } from 'formik';
 import Form from 'antd/lib/form';
-import { Button, Col, DatePicker, Radio, Row } from 'antd';
-import moment from 'moment';
-import { clientInitialValues, clientValidationSchema } from '../../validations/client.validation';
+import { Button, Col, Select, Row } from 'antd';
 import { CustomInput } from '..';
 import PhoneNumberInput from '../PhoneNumberInput';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
 import Text from 'antd/lib/typography/Text';
 import Upload from '../Upload';
+import { employeeInitialValues, employeeValidationSchema } from '../../validations/employee.validation';
 
 const AgentForm = ({ onSubmit, mode, initialValues, isUploadingImg, isSubmitting }) => {
   return (
     <Formik
-      initialValues={initialValues || clientInitialValues}
-      validationSchema={clientValidationSchema}
+      initialValues={initialValues || employeeInitialValues}
+      validationSchema={employeeValidationSchema}
       onSubmit={(formikData) => {
         onSubmit(formikData);
       }}
@@ -61,6 +60,36 @@ const AgentForm = ({ onSubmit, mode, initialValues, isUploadingImg, isSubmitting
                 />
               </Form.Item>
             </Col>
+          </Row>
+          <Row>
+            <Form.Item
+              name="employeeRole"
+              validateStatus={getValidationStatus(formikProps, 'employeeRole')}
+              help={getHelp(formikProps, 'employeeRole')}
+            >
+              <Text strong>Role:</Text>
+              <Col flex="auto">
+                <Select
+                  value={formikProps?.values?.employeeRole}
+                  placeholder="Give new employee a role"
+                  name="employeeRole"
+                  size="large"
+                  style={{ width: '100%' }}
+                  onChange={(role) => {
+                    formikProps.setFieldValue('employeeRole', role);
+                  }}
+                >
+                  {[
+                    { name: 'Administrator', value: 'ADMIN' },
+                    { name: 'Field Agent', value: 'FIELD_AGENT' }
+                  ]?.map((item, idx) => (
+                    <Select.Option value={item.value} key={idx}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+            </Form.Item>
           </Row>
           <Button
             block
