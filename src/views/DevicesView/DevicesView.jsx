@@ -20,12 +20,25 @@ const DevicesView = () => {
     setPage(p);
   };
 
+  const refreshPage = (p) => {
+    if (p) {
+      if (p === page) {
+        getDevices.sendRequest({ page });
+      } else {
+        setPage(p);
+      }
+    } else {
+      getDevices.sendRequest({ page });
+    }
+  };
+
   useHandleApiState(getDevices, {
     onSuccess: (res) => {
       setDevices(res.payload.data);
       setPagination(res.payload.meta);
     }
   });
+
   return (
     <Fragment>
       <Row style={{ paddingTop: '24px', marginLeft: '24px' }}>
@@ -67,7 +80,13 @@ const DevicesView = () => {
           </Col>
         </Row>
         <br />
-        <DevicesTable items={devices} pagination={pagination} goToPage={goToPage} />
+        <DevicesTable
+          items={devices}
+          pagination={pagination}
+          goToPage={goToPage}
+          onRefresh={refreshPage}
+          isDataTableLoading={getDevices.isLoading}
+        />
       </Card>
     </Fragment>
   );
