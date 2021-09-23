@@ -9,6 +9,11 @@ import Text from 'antd/lib/typography/Text';
 import Upload from '../Upload';
 import { employeeInitialValues, employeeValidationSchema } from '../../validations/employee.validation';
 
+export const employeeRoles = [
+  { name: 'Administrator', value: 'ADMIN' },
+  { name: 'Field Agent', value: 'FIELD_AGENT' }
+];
+
 const AgentForm = ({ onSubmit, mode, initialValues, isUploadingImg, isSubmitting }) => {
   return (
     <Formik
@@ -79,10 +84,7 @@ const AgentForm = ({ onSubmit, mode, initialValues, isUploadingImg, isSubmitting
                     formikProps.setFieldValue('employeeRole', role);
                   }}
                 >
-                  {[
-                    { name: 'Administrator', value: 'ADMIN' },
-                    { name: 'Field Agent', value: 'FIELD_AGENT' }
-                  ]?.map((item, idx) => (
+                  {employeeRoles?.map((item, idx) => (
                     <Select.Option value={item.value} key={idx}>
                       {item.name}
                     </Select.Option>

@@ -22,6 +22,18 @@ const ReportsView = () => {
     setPage(p);
   };
 
+  const refreshPage = (p) => {
+    if (p) {
+      if (p === page) {
+        getReports.sendRequest({ page });
+      } else {
+        setPage(p);
+      }
+    } else {
+      getReports.sendRequest({ page });
+    }
+  };
+
   useHandleApiState(getReports, {
     onSuccess: (res) => {
       setReports(res.payload.data);
@@ -74,7 +86,13 @@ const ReportsView = () => {
           </Col>
         </Row>
         <br />
-        <ReportsTable items={reports} pagination={pagination} goToPage={goToPage} />
+        <ReportsTable
+          items={reports}
+          pagination={pagination}
+          goToPage={goToPage}
+          onRefresh={refreshPage}
+          isDataTableLoading={getReports.isLoading}
+        />
       </Card>
     </Fragment>
   );
