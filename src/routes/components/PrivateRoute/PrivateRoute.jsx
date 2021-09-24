@@ -12,6 +12,7 @@ import ReportsView from '../../../views/ReportsView';
 import DevicesView from '../../../views/DevicesView';
 import BillingView from '../../../views/BillingView';
 import IssuesView from '../../../views/IssuesView/IssuesView';
+import CreateTaskView from '../../../views/CreateTask/CreateTaskView';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -33,6 +34,9 @@ const PrivateRoute = () => {
         <Switch>
           <Route exact path={'/issues'}>
             <IssuesView />
+          </Route>
+          <Route exact path={'/tasks/new'}>
+            <CreateTaskView />
           </Route>
           <Route exact path={'/clients'}>
             <ClientsView />
