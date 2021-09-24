@@ -20,12 +20,12 @@ const Sidebar = ({ children }) => {
   const auth = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [navItems] = useState([
-    { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
+    // { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
     { name: 'Clients', url: '/clients', icon: <UserOutlined /> },
     { name: 'Employees', url: '/employees', icon: <ContactsOutlined /> },
     { name: 'Reports', url: '/reports', icon: <AlertOutlined /> },
-    { name: 'Devices', url: '/devices', icon: <ControlOutlined /> },
-    { name: 'Billings', url: '/bills', icon: <CreditCardOutlined /> }
+    { name: 'Devices', url: '/devices', icon: <ControlOutlined /> }
+    // { name: 'Billings', url: '/bills', icon: <CreditCardOutlined /> }
   ]);
 
   const toggle = () => {

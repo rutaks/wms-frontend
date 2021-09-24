@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Input, Form, Row } from 'antd';
 import { Formik } from 'formik';
@@ -11,17 +11,26 @@ import { useHistory } from 'react-router-dom';
 import useLogin from '../../hooks/api/auth/useLogin';
 import useHandleApiState from '../../hooks/useHandleApiState';
 import useAuth from '../../context/Auth/useAuth';
+import CustomMap from '../../components/Maps/CustomMap/CustomMap';
 
 const Login = () => {
   const login = useLogin();
   const auth = useAuth();
   const history = useHistory();
+  const childRef = React.useRef();
+  const [locationName, setLocationName] = useState('');
+  const locationNameFieldRef = React.useRef();
+  const locationCoordinatesFieldRef = React.useRef();
+  const [locationCoordinates, setLocationCoordinates] = useState({
+    lat: '',
+    lng: ''
+  });
 
   useHandleApiState(login, {
     onSuccess: (response) => {
       const { payload } = response;
       auth.loginUser(payload);
-      history.push('/');
+      history.push('/clients');
     },
     onError: (error) => console.log(error)
   });
@@ -47,6 +56,7 @@ const Login = () => {
         </Row>
       </center>
       <Col span={24}>
+        <br />
         <Formik
           initialValues={loginInitialValues}
           validationSchema={loginValidationSchema}

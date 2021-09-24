@@ -110,21 +110,27 @@ const AssignReportToAgent = ({ isModalVisible, onOk, onCancel, report }) => {
       </p>
       <Divider />
 
-      <Fragment>
+      {report.assignee ? (
+        <Fragment>
+          <h3>
+            <b>Reporter:</b>
+          </h3>
+          <Comment
+            author={<a>{`${report?.assignee?.firstName} ${report?.assignee?.lastName}`}</a>}
+            avatar={<Avatar src={report?.assignee?.profilePictureUrl} alt={report?.assignee?.firstName} />}
+            content={<p>{report?.feedback || ''}</p>}
+            datetime={
+              <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                <span>{moment(new Date(report.lastUpdatedOn)).fromNow()}</span>
+              </Tooltip>
+            }
+          />
+        </Fragment>
+      ) : (
         <h3>
-          <b>Reporter:</b>
+          <b>No Reporter assigned</b>
         </h3>
-        <Comment
-          author={<a>{`${report?.assignee?.firstName} ${report?.assignee?.lastName}`}</a>}
-          avatar={<Avatar src={report?.assignee?.profilePictureUrl} alt={report?.assignee?.firstName} />}
-          content={<p>{report?.feedback || ''}</p>}
-          datetime={
-            <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-              <span>{moment(new Date(report.lastUpdatedOn)).fromNow()}</span>
-            </Tooltip>
-          }
-        />
-      </Fragment>
+      )}
       <Formik
         enableReinitialize
         initialValues={{

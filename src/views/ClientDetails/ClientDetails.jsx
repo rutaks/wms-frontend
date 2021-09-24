@@ -33,6 +33,7 @@ import useHandleApiState from '../../hooks/useHandleApiState';
 import { useParams } from 'react-router';
 import useGetClientDevices from '../../hooks/api/clients/useGetClientDevices';
 import useGetUsageByDeviceAndOwner from '../../hooks/api/clients/useGetUsageByDeviceAndOwner';
+import Axios from 'axios';
 
 const routes = [
   {
@@ -47,6 +48,14 @@ const routes = [
     path: 'second',
     breadcrumbName: "Client's details"
   }
+];
+
+const colors = [
+  'hsl(157, 70%, 50%)',
+  'hsl(174, 70%, 50%)',
+  'hsl(44, 70%, 50%)',
+  'hsl(309, 70%, 50%)',
+  'hsl(181, 70%, 50%)'
 ];
 
 const pieData = [
@@ -211,21 +220,21 @@ const ClientDetails = (props) => {
                           marginRight: 32
                         }}
                       />
-                      <Statistic
+                      {/* <Statistic
                         title="Total Usage"
                         prefix={<ArrowUpOutlined />}
                         valueStyle={{ color: '#3498eb' }}
                         suffix="m³"
                         value={Math.floor(Math.random() * 10000)}
-                      />
+                      /> */}
                     </div>
                   </Col>
-                  <Col>
+                  {/* <Col>
                     <br />
                     <Select style={{ width: 120 }}>
                       <Select.Option key={'city'}>{'city'}</Select.Option>
                     </Select>
-                  </Col>
+                  </Col> */}
                 </Row>
               }
             >
@@ -259,7 +268,7 @@ const ClientDetails = (props) => {
                 block
                 type="default"
                 onClick={() => {
-                  // history.push('/clients/new');
+                  window.location.href = `http://localhost:5000/devices/download?o_._uuid=${clientUuid}`;
                 }}
               >
                 DOWNLOAD CLIENT'S REPORT
@@ -278,7 +287,9 @@ const ClientDetails = (props) => {
       >
         <Row>
           <Col span={5}>
-            <Title level={3}>Usage Timeline ({clientDevices?.data[0]?.code})</Title>
+            <Title onClick={() => Axios.get('http://localhost:5000/devices/test')} level={3}>
+              Usage Timeline ({clientDevices?.data[0]?.code})
+            </Title>
             <br />
             <Timeline>
               {deviceUsages.data.map((u) => (
@@ -339,9 +350,14 @@ const ClientDetails = (props) => {
           <Col span={14}>
             <div style={{ height: '500px', width: '100%' }}>
               <ResponsivePie
-                data={pieData}
+                data={clientDevices.data.map((d) => ({
+                  id: d.code,
+                  label: d.code,
+                  value: d?.deviceRentalDetails[0]?.containerVolume
+                }))}
                 margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
                 innerRadius={0.5}
+                colors={colors}
                 padAngle={0.7}
                 cornerRadius={3}
                 activeOuterRadiusOffset={8}
@@ -371,38 +387,6 @@ const ClientDetails = (props) => {
                     rotation: -45,
                     lineWidth: 6,
                     spacing: 10
-                  }
-                ]}
-                fill={[
-                  {
-                    match: {
-                      id: 'AXSS-FF'
-                    },
-                    id: 'dots'
-                  },
-                  {
-                    match: {
-                      id: 'BDSS-FF'
-                    },
-                    id: 'dots'
-                  },
-                  {
-                    match: {
-                      id: 'ASDL-FF'
-                    },
-                    id: 'dots'
-                  },
-                  {
-                    match: {
-                      id: 'VDEF-GG'
-                    },
-                    id: 'dots'
-                  },
-                  {
-                    match: {
-                      id: 'KFLSS-II'
-                    },
-                    id: 'lines'
                   }
                 ]}
                 legends={[

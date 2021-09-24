@@ -5,7 +5,7 @@ import React from 'react';
 import { Fragment } from 'react';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
 
-const CustomInput = ({ formikProps, fieldName, label }) => {
+const CustomInput = ({ formikProps, fieldName, label, size = 'small' }) => {
   return (
     <Fragment>
       <Text strong>{label}</Text>
@@ -16,7 +16,7 @@ const CustomInput = ({ formikProps, fieldName, label }) => {
       >
         <Input
           style={{ paddingTop: '9px', marginBottom: '9px' }}
-          size="small"
+          size={size}
           value={formikProps.values[fieldName]}
           onChange={formikProps.handleChange(fieldName)}
         />

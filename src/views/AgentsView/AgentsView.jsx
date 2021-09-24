@@ -50,7 +50,7 @@ const AgentsView = () => {
           borderRadius: '12px'
         }}
       >
-        <Row gutter={20} align="middle" style={{ padding: '12px' }}>
+        {/* <Row gutter={20} align="middle" style={{ padding: '12px' }}>
           <Col offset={1}>
             <Card style={{ paddingLeft: '90px', paddingRight: '90px' }}>
               <Statistic title="Active Today" value={100} valueStyle={{ color: '#51befc' }} />
@@ -71,7 +71,7 @@ const AgentsView = () => {
               <Statistic title="Disabled" value={100} valueStyle={{ color: '#51befc' }} />
             </Card>
           </Col>
-        </Row>
+        </Row> */}
         <Row>
           <Button
             block

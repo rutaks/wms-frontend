@@ -73,7 +73,7 @@ const ClientsTable = ({ items, pagination, goToPage, onRefresh, isDataTableLoadi
           borderRadius: '12px'
         }}
       >
-        <Row gutter={20} align="middle" style={{ padding: '12px' }}>
+        {/* <Row gutter={20} align="middle" style={{ padding: '12px' }}>
           <Col offset={2}>
             <Card style={{ paddingLeft: '90px', paddingRight: '90px' }}>
               <Statistic
@@ -116,13 +116,13 @@ const ClientsTable = ({ items, pagination, goToPage, onRefresh, isDataTableLoadi
               />
             </Card>
           </Col>
-        </Row>
+        </Row> */}
         <Row>
           <Button
             block
             type="default"
             onClick={() => {
-              history.push('/clients/new');
+              window.location.href = 'http://localhost:5000/clients/download';
             }}
           >
             DOWNLOAD CLIENT REPORT

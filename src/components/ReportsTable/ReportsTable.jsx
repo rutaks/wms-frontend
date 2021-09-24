@@ -104,7 +104,6 @@ const ReportsTable = ({ items, pagination, goToPage, onRefresh, isDataTableLoadi
                         key={v.value}
                         icon={<CaretRightOutlined />}
                         onClick={() => {
-                          console.log('CLICKED');
                           if (v.value !== record.status) {
                             modifyReport.sendRequest({
                               uuid: record.uuid,

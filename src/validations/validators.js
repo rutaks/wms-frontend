@@ -14,6 +14,10 @@ export const firstName = Yup.string().required('First name is required');
 
 export const lastName = Yup.string().required('Last name is required');
 
+export const names = Yup.string().required('Report names are required');
+
+export const description = Yup.string().required('Description required');
+
 export const gender = Yup.string().oneOf(['MALE', 'FEMALE']);
 
 export const phoneNumber = Yup.string().required('Invalid phone number');
