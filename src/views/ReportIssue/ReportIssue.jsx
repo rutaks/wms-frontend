@@ -117,7 +117,7 @@ const ReportIssue = () => {
                 setIsUploadingImgs(false);
               }
 
-              const data = { ...formikData, locationCoordinates, locationName, issuesImgUrls };
+              const data = { ...formikData, locationCoordinates, locationName, imgUrls: issuesImgUrls };
               reportIssue.sendRequest({ data });
             }}
           >

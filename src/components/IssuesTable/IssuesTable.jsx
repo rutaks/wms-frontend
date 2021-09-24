@@ -7,8 +7,9 @@ import {
   UserOutlined,
   SyncOutlined
 } from '@ant-design/icons';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
+import IssueDetailsView from '../IssueDetailsViewModal/IssueDetailsViewModal';
 
 const mockIssues = [
   {
@@ -37,6 +38,8 @@ const IssuesTable = ({
   onRefresh = () => {},
   isDataTableLoading = false
 }) => {
+  const [isIssueDetailModalVisible, setIssueDetailModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
   return (
     <Fragment>
       <Breadcrumb>
@@ -59,6 +62,12 @@ const IssuesTable = ({
         <br />
         <br />
       </Row>
+      <IssueDetailsView
+        item={selectedItem}
+        isModalVisible={isIssueDetailModalVisible}
+        onOk={() => setIssueDetailModalVisible(false)}
+        onCancel={() => setIssueDetailModalVisible(false)}
+      />
       <Spin spinning={isDataTableLoading}>
         <Table
           pagination={{
@@ -127,6 +136,8 @@ const IssuesTable = ({
                   <UnorderedListOutlined
                     onClick={() => {
                       //   history.push(`/clients/${record.uuid}`);
+                      setSelectedItem(record);
+                      setIssueDetailModalVisible(true);
                     }}
                   />
                 )}
