@@ -11,6 +11,7 @@ import CreateAgentView from '../../../views/CreateAgentView/CreateAgentView';
 import ReportsView from '../../../views/ReportsView';
 import DevicesView from '../../../views/DevicesView';
 import BillingView from '../../../views/BillingView';
+import IssuesView from '../../../views/IssuesView/IssuesView';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -30,6 +31,9 @@ const PrivateRoute = () => {
     <Fragment>
       <Sidebar>
         <Switch>
+          <Route exact path={'/issues'}>
+            <IssuesView />
+          </Route>
           <Route exact path={'/clients'}>
             <ClientsView />
           </Route>

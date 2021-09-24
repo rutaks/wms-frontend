@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
 import { Formik } from 'formik';
 import Geocode from 'react-geocode';
 import { Button, Form, Input, message, Result, Row, Col } from 'antd';
@@ -7,8 +6,6 @@ import { CustomInput } from '../../components';
 import { usePosition } from 'use-position';
 import Title from 'antd/lib/typography/Title';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
-import useHandleApiState from '../../hooks/useHandleApiState';
-import { getErrorFromUnknown } from '../../util/error.util';
 import CustomMap from '../../components/Maps/CustomMap/CustomMap';
 import ButtonFileUpload from '../../components/ButtonFileUpload/ButtonFileUpload';
 import {
@@ -17,10 +14,14 @@ import {
 } from '../../validations/raise-issue.validation';
 import { uploadImage } from '../../util/cloudinary.util';
 import { backend } from '../../helpers/urlHelper';
+import useReportIssues from '../../hooks/api/issues/useReportIssues';
+import useHandleApiState from '../../hooks/useHandleApiState';
+import { getErrorFromUnknown } from '../../util/error.util';
 
 const ReportIssue = () => {
   const mapRef = React.useRef();
   const uploadRef = React.useRef();
+  const reportIssue = useReportIssues();
   const { latitude: autoLat, longitude: autoLng, error } = usePosition();
   const [autoLocationName, setAutoLocationName] = useState();
   const locationNameFieldRef = React.useRef();
@@ -30,6 +31,13 @@ const ReportIssue = () => {
   const [isGettingPersonalLocation, setIsGettingPersonalLocation] = useState(true);
   const [isSuccessMessageVisible, setShowSuccessMessage] = useState(false);
   const [locationCoordinates, setLocationCoordinates] = useState({ lat: '', lng: '' });
+
+  useHandleApiState(reportIssue, {
+    onSuccess: (res) => {
+      setShowSuccessMessage(true);
+    },
+    onError: (err) => message.error(`Could not send report, ${getErrorFromUnknown(err)}`)
+  });
 
   useEffect(() => {
     if (autoLat && autoLng && !error) {
@@ -55,7 +63,7 @@ const ReportIssue = () => {
           <Result
             status="success"
             title="We have received your report!"
-            subTitle={`Thank you, for reporting, your report ticket is ${'FF-FF-122'}. You can use it to check if the issue was resolved`}
+            subTitle={`Thank you, for reporting, your report ticket is ${reportIssue?.successResponse?.payload?.trackingId}. You can use it to check if the issue was resolved`}
           />
         </div>
       </div>
@@ -110,7 +118,7 @@ const ReportIssue = () => {
               }
 
               const data = { ...formikData, locationCoordinates, locationName, issuesImgUrls };
-              console.log('data', data);
+              reportIssue.sendRequest({ data });
             }}
           >
             {(formikProps) => {
@@ -196,7 +204,7 @@ const ReportIssue = () => {
                   <Button
                     style={{ marginBottom: '12px' }}
                     block
-                    loading={isUploadingImgs}
+                    loading={isUploadingImgs || reportIssue.isLoading}
                     type="primary"
                     htmlType="submit"
                   >

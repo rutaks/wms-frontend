@@ -4,13 +4,12 @@ import { Layout, Menu, Dropdown, Row, Col } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  BarChartOutlined,
+  ExclamationCircleOutlined,
   DownOutlined,
   UserOutlined,
   ContactsOutlined,
   AlertOutlined,
-  ControlOutlined,
-  CreditCardOutlined
+  ControlOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../../context/Auth';
 import Avatar from 'antd/lib/avatar/avatar';
@@ -21,8 +20,9 @@ const Sidebar = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [navItems] = useState([
     // { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
-    { name: 'Clients', url: '/clients', icon: <UserOutlined /> },
+    { name: 'Issues', url: '/issues', icon: <ExclamationCircleOutlined /> },
     { name: 'Employees', url: '/employees', icon: <ContactsOutlined /> },
+    { name: 'Clients', url: '/clients', icon: <UserOutlined /> },
     { name: 'Reports', url: '/reports', icon: <AlertOutlined /> },
     { name: 'Devices', url: '/devices', icon: <ControlOutlined /> }
     // { name: 'Billings', url: '/bills', icon: <CreditCardOutlined /> }

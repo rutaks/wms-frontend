@@ -7,15 +7,18 @@ import useMutation from '../../useMutation';
  * @author rutaks
  * @version 1.0
  */
-export const useReportIssues = () => {
+export const useGetIssues = () => {
   const { handleRequest, ...props } = useMutation({});
 
   const sendRequest = useCallback(
-    async ({ data }) => {
+    async ({ query, page = 1 }) => {
+      let queryStr = `page=${page}`;
+      if (query !== undefined && query !== '') {
+        queryStr += `&${query}`;
+      }
       return await handleRequest({
-        url: '/issues/report',
-        requestType: ApiRequestType.POST,
-        data
+        url: `/issues?${queryStr}`,
+        requestType: ApiRequestType.GET
       });
     },
     [handleRequest]
@@ -27,4 +30,4 @@ export const useReportIssues = () => {
   };
 };
 
-export default useReportIssues;
+export default useGetIssues;
