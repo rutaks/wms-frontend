@@ -1,35 +1,9 @@
 import { Avatar, Breadcrumb, Button, Card, Row, Spin, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  UnorderedListOutlined,
-  UserOutlined,
-  SyncOutlined
-} from '@ant-design/icons';
+import { SwapOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
 import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import IssueDetailsView from '../IssueDetailsViewModal/IssueDetailsViewModal';
-
-const mockIssues = [
-  {
-    description:
-      'Recusandae magnam ut. Qui magni architecto dolorum suscipit et. Aliquam porro aliquam reiciendis culpa. Modi ipsam minima voluptates provident fuga officiis. Rerum fuga doloremque maiores consectetur.',
-    imgUrls: [
-      'http://placeimg.com/640/480/nature',
-      'http://placeimg.com/640/480/nature',
-      'http://placeimg.com/640/480/nature'
-    ],
-    locationCoordinates: { lat: '-44.0250', lng: '-122.9898' },
-    locationName: '28250 Bartoletti Row',
-    reporterEmail: 'Mia.Reilly@hotmail.com',
-    reporterNames: 'Cody Jenkins',
-    reporterPhone: '797-698-7474 x4608',
-    status: 'OPEN',
-    id: 19,
-    uuid: '67a7ec1d-d0c7-4f33-9f61-95aa126cd6a2'
-  }
-];
 
 const IssuesTable = ({
   items = [],
@@ -38,6 +12,7 @@ const IssuesTable = ({
   onRefresh = () => {},
   isDataTableLoading = false
 }) => {
+  const history = useHistory();
   const [isIssueDetailModalVisible, setIssueDetailModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
   return (
@@ -133,14 +108,19 @@ const IssuesTable = ({
             render={(record) => (
               <Row style={{ justifyContent: 'space-evenly' }}>
                 {record.status === 'OPEN' && (
-                  <UnorderedListOutlined
+                  <SwapOutlined
                     onClick={() => {
-                      //   history.push(`/clients/${record.uuid}`);
-                      setSelectedItem(record);
-                      setIssueDetailModalVisible(true);
+                      history.push(`/tasks/new?from_issue=${record.uuid}`);
                     }}
                   />
                 )}
+                <UnorderedListOutlined
+                  onClick={() => {
+                    //   history.push(`/clients/${record.uuid}`);
+                    setSelectedItem(record);
+                    setIssueDetailModalVisible(true);
+                  }}
+                />
               </Row>
             )}
           />
