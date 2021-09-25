@@ -4,7 +4,7 @@ import { defaultMapCenter, defaultMapOptions } from '../Maps/CustomMap/CustomMap
 
 const MapView = forwardRef(({ defaultCoordinates = [] }, ref) => {
   const mapRef = React.useRef();
-  const [marker, setMarker] = useState([]);
+  const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
 
   const onMapLoad = React.useCallback((map) => {
@@ -20,12 +20,12 @@ const MapView = forwardRef(({ defaultCoordinates = [] }, ref) => {
 
   useEffect(() => {
     if (defaultCoordinates) {
-      setMarker(defaultCoordinates);
+      setMarkers(defaultCoordinates);
     }
   }, [defaultCoordinates]);
 
   const panTo = React.useCallback(({ lat, lng }) => {
-    setMarker({ lat: lat, lng: lng });
+    setMarkers({ lat: lat, lng: lng });
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(14);
     // eslint-disable-next-line
@@ -35,26 +35,27 @@ const MapView = forwardRef(({ defaultCoordinates = [] }, ref) => {
     <GoogleMap
       mapContainerStyle={{ height: '45vh' }}
       zoom={12}
-      center={defaultMapCenter}
+      center={defaultCoordinates[0] || defaultMapCenter}
       options={defaultMapOptions}
       onLoad={onMapLoad}
       onClick={onMapClick}
     >
-      {marker != null && (
-        <Marker
-          key={`${marker.lat}-${marker.lng}`}
-          position={{ lat: marker.lat, lng: marker.lng }}
-          onClick={() => {
-            setSelected(marker);
-          }}
-          icon={{
-            url: `${window.location.origin}/img/white_icon_svg.svg`,
-            origin: new window.google.maps.Point(0, 0),
-            anchor: new window.google.maps.Point(15, 15),
-            scaledSize: new window.google.maps.Size(30, 30)
-          }}
-        />
-      )}
+      {markers != null &&
+        markers.map((marker) => (
+          <Marker
+            key={`${marker.lat}-${marker.lng}`}
+            position={{ lat: marker.lat, lng: marker.lng }}
+            onClick={() => {
+              setSelected(marker);
+            }}
+            icon={{
+              url: `${window.location.origin}/img/white_icon_svg.svg`,
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(15, 15),
+              scaledSize: new window.google.maps.Size(30, 30)
+            }}
+          />
+        ))}
 
       {selected ? (
         <InfoWindow

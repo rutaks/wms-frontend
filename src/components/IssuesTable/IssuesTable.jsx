@@ -1,6 +1,12 @@
-import { Avatar, Breadcrumb, Button, Card, Row, Spin, Table, Tag } from 'antd';
+import { Menu, Avatar, Breadcrumb, Button, Card, Col, Dropdown, Row, Spin, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
-import { SwapOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  FilePdfOutlined,
+  DownloadOutlined,
+  SwapOutlined,
+  UnorderedListOutlined,
+  UserOutlined
+} from '@ant-design/icons';
 import React, { Fragment, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import IssueDetailsView from '../IssueDetailsViewModal/IssueDetailsViewModal';
@@ -24,19 +30,35 @@ const IssuesTable = ({
         <Breadcrumb.Item>Client</Breadcrumb.Item>
       </Breadcrumb>
       <br />
+      <p>
+        <b>REPORTS</b>
+      </p>
       <Row>
-        <Button
-          block
-          type="default"
-          onClick={() => {
-            window.location.href = 'http://localhost:5000/clients/download';
-          }}
+        <Dropdown.Button
+          overlay={
+            <Menu
+              onClick={(v) => {
+                window.location.href = `http://localhost:5000/issues/download?${v.key}`;
+              }}
+            >
+              {[
+                { key: '', label: 'All' },
+                { key: 'i_._status=OPEN', label: 'Open' },
+                { key: 'i_._status=ONGOING', label: 'Ongoing' }
+              ].map((i) => (
+                <Menu.Item key={i.key} icon={<UserOutlined />}>
+                  {i.label}
+                </Menu.Item>
+              ))}
+            </Menu>
+          }
+          placement="bottomCenter"
+          icon={<DownloadOutlined />}
         >
-          DOWNLOAD CLIENT REPORT
-        </Button>
-        <br />
-        <br />
+          Download Report by status
+        </Dropdown.Button>
       </Row>
+      <br />
       <IssueDetailsView
         item={selectedItem}
         isModalVisible={isIssueDetailModalVisible}

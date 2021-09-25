@@ -1,6 +1,12 @@
-import { Avatar, Breadcrumb, Button, Row, Spin, Table, Tag } from 'antd';
+import { Menu, Avatar, Breadcrumb, Button, Col, Dropdown, Row, Spin, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
-import { SwapOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import {
+  FilePdfOutlined,
+  DownloadOutlined,
+  SwapOutlined,
+  UnorderedListOutlined,
+  UserOutlined
+} from '@ant-design/icons';
 import React, { Fragment, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { getStatusColor } from '../../util/ui.util';
@@ -28,16 +34,71 @@ const TasksTable = ({
       <Row>
         <Button
           block
-          type="default"
+          type="primary"
           onClick={() => {
-            window.location.href = 'http://localhost:5000/clients/download';
+            history.push('tasks/new');
           }}
         >
-          DOWNLOAD CLIENT REPORT
+          CREATE TASK
         </Button>
-        <br />
-        <br />
       </Row>
+      <br />
+      <br />
+      <p>
+        <b>REPORTS</b>
+      </p>
+      <Row>
+        <Dropdown.Button
+          style={{ marginRight: '12px' }}
+          overlay={
+            <Menu
+              onClick={(v) => {
+                window.location.href = `http://localhost:5000/tasks/download?${v.key}`;
+              }}
+            >
+              {[
+                { key: '', label: 'All' },
+                { key: 't_._priority=HIGH', label: 'High' },
+                { key: 't_._priority=MEDIUM', label: 'Medium' },
+                { key: 't_._priority=LOW', label: 'Low' }
+              ].map((i) => (
+                <Menu.Item key={i.key} icon={<FilePdfOutlined />}>
+                  {i.label}
+                </Menu.Item>
+              ))}
+            </Menu>
+          }
+          placement="bottomCenter"
+          icon={<DownloadOutlined />}
+        >
+          Download Report by priority
+        </Dropdown.Button>
+        <Dropdown.Button
+          overlay={
+            <Menu
+              onClick={(v) => {
+                window.location.href = `http://localhost:5000/tasks/download?${v.key}`;
+              }}
+            >
+              {[
+                { key: '', label: 'All' },
+                { key: 't_._status=OPEN', label: 'Open' },
+                { key: 't_._status=ONGOING', label: 'Ongoing' },
+                { key: 't_._status=REJECTED', label: 'Rejected' }
+              ].map((i) => (
+                <Menu.Item key={i.key} icon={<UserOutlined />}>
+                  {i.label}
+                </Menu.Item>
+              ))}
+            </Menu>
+          }
+          placement="bottomCenter"
+          icon={<DownloadOutlined />}
+        >
+          Download Report by activity status
+        </Dropdown.Button>
+      </Row>
+      <br />
       <TaskDetailsViewModal
         item={selectedItem}
         isModalVisible={isIssueDetailModalVisible}

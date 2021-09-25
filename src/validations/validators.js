@@ -16,7 +16,11 @@ export const lastName = Yup.string().required('Last name is required');
 
 export const names = Yup.string().required('Report names are required');
 
+export const title = Yup.string().required('Title required');
+
 export const description = Yup.string().required('Description required');
+
+export const assigneeUuid = Yup.string().required('Assignee required');
 
 export const gender = Yup.string().oneOf(['MALE', 'FEMALE']);
 

@@ -77,6 +77,7 @@ const TaskDetailsViewModal = ({ isModalVisible, onOk, onCancel, onSuccess, item 
         {item?.locationName}
       </p>
       <br />
+      {console.log(item?.locationCoordinates)}
       {item && (
         <MapView
           defaultCoordinates={[

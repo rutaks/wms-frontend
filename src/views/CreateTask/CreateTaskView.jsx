@@ -12,7 +12,9 @@ import {
   Image,
   Form,
   Input,
-  Avatar
+  Avatar,
+  Button,
+  message
 } from 'antd';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -29,6 +31,10 @@ import {
   createTaskInitialValues,
   createTaskValidationSchema
 } from '../../validations/create-task.validation';
+import { CustomInput } from '../../components';
+import { uploadImage } from '../../util/cloudinary.util';
+import useCreateTask from '../../hooks/api/tasks/useCreateTask';
+import { getErrorFromUnknown } from '../../util/error.util';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -39,7 +45,9 @@ const CreateTaskView = () => {
   const history = useHistory();
   const query = useQuery();
   const getIssue = useGetIssue();
+  const createTask = useCreateTask();
   const [foundIssue, setFoundIssue] = useState();
+  const [isUploadingImages, setIsUploadingImages] = useState();
   const [gettingIssue, setGettingIssue] = useState(true);
   const getActiveAgentsPaged = useGetActiveAgentsPaged();
 
@@ -51,9 +59,9 @@ const CreateTaskView = () => {
 
   useEffect(() => {
     const issueUuid = query.get('from_issue');
+    getActiveAgentsPaged.sendRequest();
     if (issueUuid) {
       getIssue.sendRequest({ uuid: issueUuid });
-      getActiveAgentsPaged.sendRequest();
     } else {
       setGettingIssue(false);
     }
@@ -73,6 +81,13 @@ const CreateTaskView = () => {
       locationNameFieldRef.current(foundIssue?.locationName);
     }
   }, [locationNameFieldRef, foundIssue]);
+
+  useHandleApiState(createTask, {
+    onSuccess: () => {
+      history.push('/tasks');
+    },
+    onError: (err) => message.error(`Could not create task, ${getErrorFromUnknown(err)}`)
+  });
 
   useHandleApiState(getIssue, {
     onSuccess: (res) => {
@@ -140,9 +155,49 @@ const CreateTaskView = () => {
           enableReinitialize
           initialValues={{
             ...createTaskInitialValues.description,
-            description: foundIssue.description || createTaskInitialValues.description
+            description: foundIssue?.description || createTaskInitialValues.description
           }}
           validationSchema={createTaskValidationSchema}
+          onSubmit={async (formikData) => {
+            const fileList = uploadRef.current.getFileList() || [];
+            const issuesImgUrls = [];
+            if (fileList.length < 1) {
+              message.error('No image(s) were not set');
+              return;
+            }
+            if (!locationCoordinates) {
+              message.error('Coordinates missing');
+              return;
+            }
+
+            if (!locationName) {
+              message.error('Location name missing');
+              return;
+            }
+
+            for (let i = 0; i < fileList.length; i++) {
+              setIsUploadingImages(true);
+              const file = fileList[i];
+              const imgRes = await uploadImage(file);
+              issuesImgUrls.push(imgRes.url);
+              setIsUploadingImages(false);
+            }
+            if (foundIssue?.imgUrls) {
+              for (let i = 0; i < foundIssue?.imgUrls?.length; i++) {
+                const element = foundIssue?.imgUrls[i];
+                issuesImgUrls.push(element);
+              }
+            }
+            const data = {
+              ...formikData,
+              locationCoordinates,
+              locationName,
+              imgUrls: issuesImgUrls,
+              issueCreatedFromUuid: foundIssue?.uuid
+            };
+
+            createTask.sendRequest({ data });
+          }}
         >
           {(formikProps) => (
             <Fragment>
@@ -171,6 +226,7 @@ const CreateTaskView = () => {
               ))}
               <br />
               <br />
+              <CustomInput formikProps={formikProps} fieldName="title" label="Task Title" />
               <h4>Task description:</h4>
               <Form.Item
                 validateStatus={getValidationStatus(formikProps, 'description')}
@@ -189,6 +245,7 @@ const CreateTaskView = () => {
                 help={getHelp(formikProps, 'assigneeUuid')}
               >
                 <Select
+                  loading={getActiveAgentsPaged.isLoading}
                   showSearch={true}
                   className="form_item"
                   placeholder="Select Agent"
@@ -251,6 +308,15 @@ const CreateTaskView = () => {
               />
               <br />
               <br />
+              <Button
+                style={{ marginBottom: '12px' }}
+                block
+                loading={isUploadingImages || createTask.isLoading}
+                type="primary"
+                onClick={() => formikProps.handleSubmit()}
+              >
+                Create task
+              </Button>
             </Fragment>
           )}
         </Formik>

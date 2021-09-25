@@ -1,13 +1,15 @@
 import * as yup from 'yup';
-import { description } from './validators';
+import { description, title, assigneeUuid } from './validators';
 
 export const createTaskInitialValues = {
   title: '',
   description: '',
   imgUrls: null,
-  assigneeUuid: null
+  assigneeUuid: ''
 };
 
 export const createTaskValidationSchema = yup.object().shape({
-  description
+  title,
+  description,
+  assigneeUuid
 });
