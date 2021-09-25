@@ -21,6 +21,7 @@ const Sidebar = ({ children }) => {
   const [navItems] = useState([
     // { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
     { name: 'Issues', url: '/issues', icon: <ExclamationCircleOutlined /> },
+    { name: 'Tasks', url: '/tasks', icon: <ExclamationCircleOutlined /> },
     { name: 'Employees', url: '/employees', icon: <ContactsOutlined /> },
     { name: 'Clients', url: '/clients', icon: <UserOutlined /> },
     { name: 'Reports', url: '/reports', icon: <AlertOutlined /> },

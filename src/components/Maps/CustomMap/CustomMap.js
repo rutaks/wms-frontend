@@ -4,12 +4,12 @@ import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import styles from './styles';
 import MapSearchField from '../MapSearchField/MapSearchField';
 
-const center = {
+export const defaultMapCenter = {
   lat: -1.94496,
   lng: 30.06204
 };
 
-const options = {
+export const defaultMapOptions = {
   styles: styles,
   disableDefaultUI: true,
   zoomControl: true
@@ -88,8 +88,8 @@ const CustomMap = forwardRef(
           <GoogleMap
             mapContainerStyle={{ height: '45vh' }}
             zoom={12}
-            center={center}
-            options={options}
+            center={defaultMapCenter}
+            options={defaultMapOptions}
             onLoad={onMapLoad}
             onClick={onMapClick}
           >
