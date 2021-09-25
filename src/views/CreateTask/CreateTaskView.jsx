@@ -12,9 +12,7 @@ import {
   Image,
   Form,
   Input,
-  Avatar,
-  Dropdown,
-  Button
+  Avatar
 } from 'antd';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -23,14 +21,14 @@ import useGetActiveAgentsPaged from '../../hooks/api/employees/useGetActiveAgent
 import useGetIssue from '../../hooks/api/issues/useGetIssue';
 import useHandleApiState from '../../hooks/useHandleApiState';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
-import {
-  raiseIssueInitialValues,
-  raiseIssueValidationSchema
-} from '../../validations/raise-issue.validation';
 import { employeeRoles } from '../../components/AgentForm/AgentForm';
 import CheckableTag from 'antd/lib/tag/CheckableTag';
 import { reportPriority } from '../../components/AssignReportToAgent/AssignReportToAgent';
 import CustomMap from '../../components/Maps/CustomMap/CustomMap';
+import {
+  createTaskInitialValues,
+  createTaskValidationSchema
+} from '../../validations/create-task.validation';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -60,6 +58,21 @@ const CreateTaskView = () => {
       setGettingIssue(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (mapRef && foundIssue) {
+      setLocationCoordinates({
+        lat: Number(foundIssue?.locationCoordinates?.lat),
+        lng: Number(foundIssue?.locationCoordinates?.lng)
+      });
+    }
+  }, [mapRef, foundIssue]);
+
+  useEffect(() => {
+    if (locationNameFieldRef && foundIssue) {
+      locationNameFieldRef.current(foundIssue?.locationName);
+    }
+  }, [locationNameFieldRef, foundIssue]);
 
   useHandleApiState(getIssue, {
     onSuccess: (res) => {
@@ -123,7 +136,14 @@ const CreateTaskView = () => {
           subTitle="Fill in the necessary info"
         />
         <Divider />
-        <Formik initialValues={raiseIssueInitialValues} validationSchema={raiseIssueValidationSchema}>
+        <Formik
+          enableReinitialize
+          initialValues={{
+            ...createTaskInitialValues.description,
+            description: foundIssue.description || createTaskInitialValues.description
+          }}
+          validationSchema={createTaskValidationSchema}
+        >
           {(formikProps) => (
             <Fragment>
               <h4>Priority:</h4>
@@ -137,8 +157,6 @@ const CreateTaskView = () => {
                     formikProps.setFieldValue('priority', rp.value);
                   }}
                 >
-                  {console.log(formikProps.values?.priority)}
-                  {console.log(rp)}
                   {rp.name}
                 </CheckableTag>
               ))}
@@ -161,7 +179,7 @@ const CreateTaskView = () => {
                 <Input.TextArea
                   placeholder="..."
                   rows={5}
-                  value={formikProps.values.description}
+                  value={formikProps.values.description || ''}
                   onChange={formikProps.handleChange('description')}
                 />
               </Form.Item>
