@@ -47,7 +47,7 @@ const TaskActivityTimeline = ({ activities }) => {
                       <b>{activity?.entity?.firstName}</b>
                       {` changed the status to `}
                       <span style={{ color: getActivityStatusColor(activity.status) }}>
-                        <b>{activity?.description}</b>
+                        <b>{activity?.status}</b>
                       </span>
                     </p>
                     {activity?.status === 'REJECTED' && (

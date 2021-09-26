@@ -30,7 +30,7 @@ const Login = () => {
     onSuccess: (response) => {
       const { payload } = response;
       auth.loginUser(payload);
-      history.push('/clients');
+      history.push('/issues');
     },
     onError: (error) => console.log(error)
   });

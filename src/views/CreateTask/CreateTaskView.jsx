@@ -258,7 +258,10 @@ const CreateTaskView = () => {
                   onPopupScroll={(e) => {
                     e.persist();
                     const { target } = e;
-                    if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
+                    console.log(target.scrollTop + target.offsetHeight);
+                    console.log(target.scrollHeight);
+                    if (target.scrollTop + target.offsetHeight > target.scrollHeight - 10) {
+                      console.log('fdsafdsa');
                       getActiveAgentsPaged.goToNextPage();
                     }
                   }}
@@ -277,6 +280,7 @@ const CreateTaskView = () => {
                           <span style={{ color: '#c9c9c9' }}>
                             {`Last Active: ${moment(new Date(item.lastUpdatedOn)).fromNow()}`}
                           </span>
+                          <span style={{ color: '#c9c9c9' }}>{`, Phone No: ${item.phoneNumber}`}</span>
                         </Col>
                       </Row>
                     </Select.Option>

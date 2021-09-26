@@ -7,10 +7,12 @@ import {
   UnorderedListOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { getStatusColor } from '../../util/ui.util';
 import TaskDetailsViewModal from '../TaskDetailsViewModal/TaskDetailsViewModal';
+import { AssigneePopOver } from '..';
+import useGetActiveAgentsPaged from '../../hooks/api/employees/useGetActiveAgentsPaged';
 
 const TasksTable = ({
   items = [],
@@ -22,6 +24,10 @@ const TasksTable = ({
   const history = useHistory();
   const [isIssueDetailModalVisible, setIssueDetailModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
+  const getActiveAgentsPaged = useGetActiveAgentsPaged();
+  useEffect(() => {
+    getActiveAgentsPaged.sendRequest();
+  }, []);
   return (
     <Fragment>
       <Breadcrumb>
@@ -179,6 +185,12 @@ const TasksTable = ({
                     setSelectedItem(record);
                     setIssueDetailModalVisible(true);
                   }}
+                />
+
+                <AssigneePopOver
+                  onSuccess={onRefresh}
+                  task={record}
+                  getActiveAgentsPaged={getActiveAgentsPaged}
                 />
               </Row>
             )}

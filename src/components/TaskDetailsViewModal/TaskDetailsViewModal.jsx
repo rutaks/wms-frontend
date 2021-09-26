@@ -33,6 +33,7 @@ const TaskDetailsViewModal = ({ isModalVisible, onOk, onCancel, onSuccess, item 
   const [activities, setActivities] = useState([]);
   const addCommentToTask = useAddCommentToTask();
   const getTaskActivitiesByTask = useGetTaskActivitiesByTask();
+  let timer = null;
 
   useEffect(() => {
     if (item) {
@@ -95,7 +96,9 @@ const TaskDetailsViewModal = ({ isModalVisible, onOk, onCancel, onSuccess, item 
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Image available" />
       )}
-      <Divider orientation="left">Tasks Activities</Divider>
+      <Divider orientation="left">
+        <span onClick={() => getTaskActivitiesByTask.sendRequest({ uuid: item.uuid })}>Tasks Activities</span>
+      </Divider>
       <Collapse>
         <Collapse.Panel header="View all task activities" key="1">
           <TaskActivityTimeline activities={activities} />

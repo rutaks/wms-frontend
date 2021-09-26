@@ -24,6 +24,12 @@ const Routes = () => {
           name={'Client Password Confirmation'}
           component={ConfimClientAccount}
         />
+        <Route
+          exact
+          path={'/agents/confirm-account/:token'}
+          name={'Agent Password Confirmation'}
+          component={ConfimClientAccount}
+        />
         <PrivateRoute />
       </Switch>
     </Suspense>
