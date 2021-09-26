@@ -11,6 +11,18 @@ const TasksView = () => {
 
   const [page, setPage] = useState(1);
 
+  const refreshPage = (p) => {
+    if (p) {
+      if (p === page) {
+        getTasks.sendRequest({ page });
+      } else {
+        setPage(p);
+      }
+    } else {
+      getTasks.sendRequest({ page });
+    }
+  };
+
   useEffect(() => {
     getTasks.sendRequest({ page });
   }, [page]);
@@ -40,6 +52,7 @@ const TasksView = () => {
           isDataTableLoading={getTasks.isLoading}
           pagination={pagination}
           goToPage={goToPage}
+          onRefresh={refreshPage}
         />
       </Card>
     </Fragment>
