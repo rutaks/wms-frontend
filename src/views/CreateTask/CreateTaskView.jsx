@@ -16,7 +16,7 @@ import {
   Button,
   message
 } from 'antd';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import ButtonFileUpload from '../../components/ButtonFileUpload/ButtonFileUpload';
 import useGetActiveAgentsPaged from '../../hooks/api/employees/useGetActiveAgentsPaged';
@@ -35,6 +35,9 @@ import { CustomInput } from '../../components';
 import { uploadImage } from '../../util/cloudinary.util';
 import useCreateTask from '../../hooks/api/tasks/useCreateTask';
 import { getErrorFromUnknown } from '../../util/error.util';
+import Text from 'antd/lib/typography/Text';
+import { useSetLocations } from '../../hooks/useLocation';
+const { Provinces, Districts, Sectors, Cells, Villages } = require('rwanda');
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -43,7 +46,9 @@ function useQuery() {
 const CreateTaskView = () => {
   const uploadRef = React.useRef();
   const history = useHistory();
+  const locationHook = useSetLocations();
   const query = useQuery();
+  const formikRef = useRef(null);
   const getIssue = useGetIssue();
   const createTask = useCreateTask();
   const [foundIssue, setFoundIssue] = useState();
@@ -152,6 +157,7 @@ const CreateTaskView = () => {
         />
         <Divider />
         <Formik
+          innerRef={formikRef}
           enableReinitialize
           initialValues={{
             ...createTaskInitialValues.description,
@@ -160,6 +166,9 @@ const CreateTaskView = () => {
           validationSchema={createTaskValidationSchema}
           onSubmit={async (formikData) => {
             const fileList = uploadRef.current.getFileList() || [];
+            if (!locationHook.village) {
+              message.error("Select the device's location");
+            }
             const issuesImgUrls = [];
             if (fileList.length < 1) {
               message.error('No image(s) were not set');
@@ -193,7 +202,8 @@ const CreateTaskView = () => {
               locationCoordinates,
               locationName,
               imgUrls: issuesImgUrls,
-              issueCreatedFromUuid: foundIssue?.uuid
+              issueCreatedFromUuid: foundIssue?.uuid,
+              locationDto: locationHook.mapLocationHierarchy()
             };
 
             createTask.sendRequest({ data });
@@ -313,20 +323,165 @@ const CreateTaskView = () => {
                 setLocationName={setLocationName}
                 setLocationCoordinates={setLocationCoordinates}
               />
-              <br />
-              <br />
-              <Button
-                style={{ marginBottom: '12px' }}
-                block
-                loading={isUploadingImages || createTask.isLoading}
-                type="primary"
-                onClick={() => formikProps.handleSubmit()}
-              >
-                Create task
-              </Button>
             </Fragment>
           )}
         </Formik>
+        <Fragment>
+          <br />
+          <h3>Descriptive Location</h3>
+          <Row>
+            <Col span={10}>
+              <Text strong>Province:</Text>
+              <Form.Item name="province">
+                <Select
+                  showSearch
+                  value={locationHook.province}
+                  className="my_input"
+                  aria-autocomplete={'none'}
+                  placeholder="Select province"
+                  name="province"
+                  size="large"
+                  onChange={(province) => {
+                    console.log('fffff');
+                    locationHook.selectProvince(province);
+                  }}
+                >
+                  {Provinces().map((item, idx) => (
+                    <Select.Option value={item} key={idx}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={11} offset={2}>
+              <Text strong>District:</Text>
+              <Form.Item name="district">
+                <Select
+                  showSearch
+                  disabled={!locationHook.province}
+                  value={locationHook?.district}
+                  className="my_input"
+                  aria-autocomplete={'none'}
+                  placeholder="Select district"
+                  name="district"
+                  size="large"
+                  style={{ width: '100%' }}
+                  onChange={(district) => {
+                    console.log('district', district);
+                    locationHook.selectDistrict(district);
+                  }}
+                >
+                  {Districts(locationHook?.province)?.map((item, idx) => (
+                    <Select.Option value={item} key={idx}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={10}>
+              <Form.Item name="sector">
+                <Text strong>Sector:</Text>
+                <Select
+                  showSearch
+                  disabled={!locationHook.district}
+                  value={locationHook?.sector}
+                  className="my_input"
+                  aria-autocomplete={'none'}
+                  placeholder="Select sector"
+                  name="sector"
+                  size="large"
+                  style={{ width: '100%' }}
+                  onChange={(sector) => {
+                    console.log('sector', sector);
+                    locationHook.selectSector(sector);
+                  }}
+                >
+                  {Sectors(locationHook?.province, locationHook?.district)?.map((item, idx) => (
+                    <Select.Option value={item} key={idx}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={11} offset={2}>
+              <Form.Item name="cell">
+                <Text strong>Cell:</Text>
+                <Select
+                  showSearch
+                  disabled={!locationHook.sector}
+                  value={locationHook?.cell}
+                  className="my_input"
+                  aria-autocomplete={'none'}
+                  placeholder="Search or select cell"
+                  name="cell"
+                  size="large"
+                  style={{ width: '100%' }}
+                  onChange={(cell) => {
+                    console.log('cell', cell);
+                    locationHook.selectCell(cell);
+                  }}
+                >
+                  {Cells(locationHook?.province, locationHook?.district, locationHook?.sector)?.map(
+                    (item, idx) => (
+                      <Select.Option value={item} key={idx}>
+                        {item}
+                      </Select.Option>
+                    )
+                  )}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={10}>
+              <Form.Item name="village">
+                <Text strong>Village:</Text>
+                <Select
+                  showSearch
+                  disabled={!locationHook.cell}
+                  value={locationHook?.village}
+                  className="my_input"
+                  aria-autocomplete={'none'}
+                  placeholder="Search or select village"
+                  name="village"
+                  size="large"
+                  style={{ width: '100%' }}
+                  onChange={(village) => {
+                    console.log('village', village);
+                    locationHook.selectVillage(village);
+                  }}
+                >
+                  {Villages(
+                    locationHook?.province,
+                    locationHook?.district,
+                    locationHook?.sector,
+                    locationHook?.cell
+                  )?.map((item, idx) => (
+                    <Select.Option value={item} key={idx}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <br />
+          <br />
+          <Button
+            style={{ marginBottom: '12px' }}
+            block
+            loading={isUploadingImages || createTask.isLoading}
+            type="primary"
+            onClick={() => formikRef.current?.handleSubmit()}
+          >
+            Create task
+          </Button>
+        </Fragment>
       </Card>
     </Col>
   );
