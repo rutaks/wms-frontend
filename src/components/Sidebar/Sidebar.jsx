@@ -8,7 +8,8 @@ import {
   DownOutlined,
   UserOutlined,
   ContactsOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  UnorderedListOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../../context/Auth';
 import Avatar from 'antd/lib/avatar/avatar';
@@ -20,7 +21,7 @@ const Sidebar = ({ children }) => {
   const [navItems] = useState([
     { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
     { name: 'Issues', url: '/issues', icon: <ExclamationCircleOutlined /> },
-    { name: 'Tasks', url: '/tasks', icon: <ExclamationCircleOutlined /> },
+    { name: 'Tasks', url: '/tasks', icon: <UnorderedListOutlined /> },
     { name: 'Employees', url: '/employees', icon: <ContactsOutlined /> }
     // { name: 'Devices', url: '/devices', icon: <ControlOutlined /> }
     // { name: 'Clients', url: '/clients', icon: <UserOutlined /> },

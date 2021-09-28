@@ -10,10 +10,11 @@ const IssuesView = () => {
   const [pagination, setPagination] = useState({});
 
   const [page, setPage] = useState(1);
+  const [queryStr, setQueryStr] = useState();
 
   useEffect(() => {
-    getIssues.sendRequest({ page });
-  }, [page]);
+    getIssues.sendRequest({ page, query: queryStr });
+  }, [page, queryStr]);
 
   const goToPage = (p) => {
     setPage(p);
@@ -25,6 +26,8 @@ const IssuesView = () => {
       setPagination(res.payload.meta);
     }
   });
+
+  const filter = (query) => setQueryStr(query);
 
   return (
     <Fragment>
@@ -40,6 +43,7 @@ const IssuesView = () => {
           isDataTableLoading={getIssues.isLoading}
           pagination={pagination}
           goToPage={goToPage}
+          onFilter={filter}
         />
       </Card>
     </Fragment>

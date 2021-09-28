@@ -277,9 +277,12 @@ const CreateTaskView = () => {
                             employeeRoles.find((er) => er.value === item.employeeRole).name
                           })`}</span>
                           <br />
+                          <b style={{ color: '#c9c9c9' }}>{`Total ongoing tasks: ${item.tasksOngoing}`}</b>
+                          <br />
                           <span style={{ color: '#c9c9c9' }}>
                             {`Last Active: ${moment(new Date(item.lastUpdatedOn)).fromNow()}`}
                           </span>
+                          <br />
                           <span style={{ color: '#c9c9c9' }}>{`, Phone No: ${item.phoneNumber}`}</span>
                         </Col>
                       </Row>

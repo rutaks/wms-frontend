@@ -10,13 +10,15 @@ import {
 import React, { Fragment, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import IssueDetailsView from '../IssueDetailsViewModal/IssueDetailsViewModal';
+import { taskQueryStrBuilder } from '../../util/query.util';
 
 const IssuesTable = ({
   items = [],
   pagination = {},
   goToPage = () => {},
   onRefresh = () => {},
-  isDataTableLoading = false
+  isDataTableLoading = false,
+  onFilter
 }) => {
   const history = useHistory();
   const [isIssueDetailModalVisible, setIssueDetailModalVisible] = useState(false);
@@ -74,6 +76,9 @@ const IssuesTable = ({
             onChange: (p) => goToPage(p)
           }}
           dataSource={items}
+          onChange={(pagination, filters, sorter) => {
+            onFilter(taskQueryStrBuilder(sorter, filters));
+          }}
         >
           <Column title="#" render={(_, __, idx) => idx + 1} />
           <Column
@@ -124,7 +129,17 @@ const IssuesTable = ({
               </Avatar.Group>
             )}
           />
-          <Column title={'Acc. Status'} render={(record, idx) => <Tag key={idx}>{record.status}</Tag>} />
+          <Column
+            key="i_._status"
+            filters={[
+              { text: 'Open', value: 'OPEN' },
+              { text: 'Assigned', value: 'ASSIGNED' },
+              { text: 'Closed', value: 'CLOSED' },
+              { text: 'Ongoing', value: 'ONGOING' }
+            ]}
+            title={'Acc. Status'}
+            render={(record, idx) => <Tag key={idx}>{record.status}</Tag>}
+          />
           <Column
             title={'Action'}
             render={(record) => (
