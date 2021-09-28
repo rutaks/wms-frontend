@@ -20,6 +20,7 @@ const AssigneePopOver = ({ task, getActiveAgentsPaged, onSuccess }) => {
 
   return (
     <Popover
+      onVisibleChange={(v) => setIsPopoverVisible(v)}
       visible={isPopoverVisible}
       content={
         <Fragment>

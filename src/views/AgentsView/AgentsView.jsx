@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Breadcrumb, Button, Card, Col, Row, Statistic, Table, Tag } from 'antd';
+import { Breadcrumb, Button, Card, Menu, Dropdown, Row, Statistic, Table, Tag } from 'antd';
+import { FilePdfOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Link, useHistory } from 'react-router-dom';
 import AgentsTable from '../../components/AgentsTable/AgentsTable';
 import useGetEmployees from '../../hooks/api/employees/useGetEmployees';
@@ -82,6 +83,56 @@ const AgentsView = () => {
           >
             CREATE EMPLOYEE
           </Button>
+          <br />
+          <br />
+          <p>
+            <b>REPORTS</b>
+          </p>
+          <Button
+            block
+            type="default"
+            onClick={() => {
+              window.location.href = `http://localhost:5000/employees/download`;
+            }}
+          >
+            DOWNLOAD REPORT OF ALL EMPLOYEES
+          </Button>
+          <br />
+          <br />
+          <Button
+            block
+            type="default"
+            onClick={() => {
+              window.location.href = `http://localhost:5000/employees/download/task-count`;
+            }}
+          >
+            DOWNLOAD EMPLOYEES WITH NO. TASKS
+          </Button>
+          <br />
+          <br />
+          <Dropdown.Button
+            style={{ marginRight: '12px' }}
+            overlay={
+              <Menu
+                onClick={(v) => {
+                  window.location.href = `http://localhost:5000/employees/download?${v.key}`;
+                }}
+              >
+                {[
+                  { key: 'e_._employeeRole=ADMIN', label: 'All Admins' },
+                  { key: 'e_._employeeRole=FIELD_AGENT', label: 'All Field Agents' }
+                ].map((i) => (
+                  <Menu.Item key={i.key} icon={<FilePdfOutlined />}>
+                    {i.label}
+                  </Menu.Item>
+                ))}
+              </Menu>
+            }
+            placement="bottomCenter"
+            icon={<DownloadOutlined />}
+          >
+            Download Employees by role
+          </Dropdown.Button>
         </Row>
         <br />
         <AgentsTable items={agents} pagination={pagination} goToPage={goToPage} />

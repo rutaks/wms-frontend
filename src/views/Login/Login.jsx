@@ -97,7 +97,7 @@ const Login = () => {
                 <Button
                   style={{ marginBottom: '12px' }}
                   block
-                  loading={login.loading}
+                  loading={login.isLoading}
                   type="primary"
                   htmlType="submit"
                   className="login-form-button"

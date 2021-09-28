@@ -106,7 +106,7 @@ const Content = ({ children, extra }) => (
   </div>
 );
 
-const getColorFromLevel = (level) => {
+export const getColorFromLevel = (level) => {
   if (level > 60) {
     return 'blue';
   } else if (level > 40) {
@@ -116,7 +116,7 @@ const getColorFromLevel = (level) => {
   }
 };
 
-const getStatusIconFromLevel = (level) => {
+export const getStatusIconFromLevel = (level) => {
   if (level > 60) {
     return <CheckCircleOutlined />;
   } else if (level > 40) {

@@ -51,6 +51,8 @@ const TaskDetailsViewModal = ({ isModalVisible, onOk, onCancel, onSuccess, item 
     onError: (err) => message.error(`Could add activity, ${getErrorFromUnknown(err)}`)
   });
 
+  console.log('item', item);
+
   return (
     <Modal
       width={1200}
@@ -68,6 +70,13 @@ const TaskDetailsViewModal = ({ isModalVisible, onOk, onCancel, onSuccess, item 
           <Tag color={getStatusColor(item?.priority)}>{item?.priority}</Tag>
         </Col>
       </Row>
+      <br />
+      <b>ReporterDetails</b>
+      <br />
+      <Typography.Text level={3}>Names: {item?.issue?.reporterNames}</Typography.Text>
+      <br />
+      <Typography.Text level={3}>Phone Number: {item?.issue?.reporterPhone}</Typography.Text>
+      <br />
       <br />
       <b>Description</b>
       <br />

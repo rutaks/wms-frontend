@@ -10,6 +10,7 @@ const TasksView = () => {
   const [pagination, setPagination] = useState({});
 
   const [page, setPage] = useState(1);
+  const [queryStr, setQueryStr] = useState();
 
   const refreshPage = (p) => {
     if (p) {
@@ -24,8 +25,8 @@ const TasksView = () => {
   };
 
   useEffect(() => {
-    getTasks.sendRequest({ page });
-  }, [page]);
+    getTasks.sendRequest({ query: queryStr, page });
+  }, [page, queryStr]);
 
   const goToPage = (p) => {
     setPage(p);
@@ -37,6 +38,8 @@ const TasksView = () => {
       setPagination(res.payload.meta);
     }
   });
+
+  const filter = (query) => setQueryStr(query);
 
   return (
     <Fragment>
@@ -53,6 +56,7 @@ const TasksView = () => {
           pagination={pagination}
           goToPage={goToPage}
           onRefresh={refreshPage}
+          onFilter={filter}
         />
       </Card>
     </Fragment>

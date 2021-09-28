@@ -13,13 +13,15 @@ import { getStatusColor } from '../../util/ui.util';
 import TaskDetailsViewModal from '../TaskDetailsViewModal/TaskDetailsViewModal';
 import { AssigneePopOver } from '..';
 import useGetActiveAgentsPaged from '../../hooks/api/employees/useGetActiveAgentsPaged';
+import { taskQueryStrBuilder } from '../../util/query.util';
 
 const TasksTable = ({
   items = [],
   pagination = {},
   goToPage = () => {},
   onRefresh = () => {},
-  isDataTableLoading = false
+  isDataTableLoading = false,
+  onFilter = () => {}
 }) => {
   const history = useHistory();
   const [isIssueDetailModalVisible, setIssueDetailModalVisible] = useState(false);
@@ -113,6 +115,9 @@ const TasksTable = ({
       />
       <Spin spinning={isDataTableLoading}>
         <Table
+          onChange={(pagination, filters, sorter) => {
+            onFilter(taskQueryStrBuilder(sorter, filters));
+          }}
           pagination={{
             total: pagination.totalItems,
             current: pagination.currentPage,
@@ -160,25 +165,34 @@ const TasksTable = ({
             )}
           />
           <Column
+            key="t_._priority"
             title={'Priority'}
+            filters={[
+              { text: 'High', value: 'HIGH' },
+              { text: 'Medium', value: 'MEDIUM' },
+              { text: 'Low', value: 'LOW' }
+            ]}
             render={(record, idx) => (
               <Tag color={getStatusColor(record.priority)} key={idx}>
                 {record.priority}
               </Tag>
             )}
           />
-          <Column title={'Activity status'} render={(record, idx) => <Tag key={idx}>{record.status}</Tag>} />
+          <Column
+            filters={[
+              { text: 'Open', value: 'OPEN' },
+              { text: 'Assigned', value: 'ASSIGNED' },
+              { text: 'Closed', value: 'CLOSED' },
+              { text: 'Ongoing', value: 'ONGOING' }
+            ]}
+            key="t_._status"
+            title={'Activity status'}
+            render={(record, idx) => <Tag key={idx}>{record.status}</Tag>}
+          />
           <Column
             title={'Action'}
             render={(record) => (
               <Row style={{ justifyContent: 'space-evenly' }}>
-                {record.status === 'OPEN' && (
-                  <SwapOutlined
-                    onClick={() => {
-                      history.push(`/tasks/new?from_issue=${record.uuid}`);
-                    }}
-                  />
-                )}
                 <UnorderedListOutlined
                   onClick={() => {
                     //   history.push(`/clients/${record.uuid}`);

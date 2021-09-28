@@ -9,6 +9,7 @@ const ForgotPassword = lazy(() => import('../views/ForgotPassword'));
 const ResetPassword = lazy(() => import('../views/ResetPassword'));
 const ConfimClientAccount = lazy(() => import('../views/ConfimClientAccount'));
 const ReportIssue = lazy(() => import('../views/ReportIssue'));
+const CheckIssueStatus = lazy(() => import('../views/CheckIssueStatus'));
 
 const Routes = () => {
   return (
@@ -30,6 +31,7 @@ const Routes = () => {
           name={'Agent Password Confirmation'}
           component={ConfimClientAccount}
         />
+        <Route exact path={'/public/issues/status'} name="Check issue status" component={CheckIssueStatus} />
         <PrivateRoute />
       </Switch>
     </Suspense>

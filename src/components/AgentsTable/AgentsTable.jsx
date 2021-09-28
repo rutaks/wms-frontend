@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Breadcrumb, Button, Card, Col, Row, Statistic, Table, Tag } from 'antd';
+import { Breadcrumb, Button, Card, Col, message, Row, Statistic, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
 import {
   EditOutlined,
@@ -35,6 +35,7 @@ const getStatusColor = (status) => {
 };
 
 const AgentsTable = ({ items, pagination, goToPage }) => {
+  const history = useHistory();
   return (
     <Table
       pagination={{
@@ -90,13 +91,22 @@ const AgentsTable = ({ items, pagination, goToPage }) => {
         title={'Action'}
         render={(record) => (
           <Row style={{ justifyContent: 'space-evenly' }}>
+            <UnorderedListOutlined
+              onClick={() => {
+                if (record) {
+                  history.push(`/employees/${record.uuid}`);
+                } else {
+                  message.error('Client does not have an email, can not resend verification');
+                }
+              }}
+            />
             {/* <EditOutlined onClick={() => {}} /> */}
             {/* <UnorderedListOutlined
               onClick={() => {
                 history.push('/clients/1740ef5c-c43c-419d-beac-564b946a8538');
               }}
             /> */}
-            <DeleteOutlined onClick={() => {}} />
+            {/* <DeleteOutlined onClick={() => {}} /> */}
           </Row>
         )}
       />
