@@ -11,8 +11,8 @@ export const useGetEmployees = () => {
   const { handleRequest, ...props } = useMutation({});
 
   const sendRequest = useCallback(
-    async ({ query, page = 1 }) => {
-      let queryStr = `page=${page}`;
+    async ({ query, page = 1, limit = 10 }) => {
+      let queryStr = `page=${page}&limit=${limit}`;
       if (query !== undefined && query !== '') {
         queryStr += `&${query}`;
       }

@@ -269,7 +269,7 @@ const CreateTaskView = () => {
                     e.persist();
                     const { target } = e;
                     console.log(target.scrollTop + target.offsetHeight);
-                    console.log(target.scrollHeight);
+                    console.log(target.scrollHeight - 10);
                     if (target.scrollTop + target.offsetHeight > target.scrollHeight - 10) {
                       console.log('fdsafdsa');
                       getActiveAgentsPaged.goToNextPage();

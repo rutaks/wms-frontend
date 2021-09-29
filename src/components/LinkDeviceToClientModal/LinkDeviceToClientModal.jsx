@@ -41,7 +41,8 @@ const LinkDeviceToClientModal = ({ isModalVisible, onOk, onCancel, onSuccess, cl
             message.error("Select the device's location");
           }
           const deviceInfo = { ...formikData, clientUuid, locationDto: locationHook.mapLocationHierarchy() };
-          createAndAssignDevice.sendRequest({ data: deviceInfo });
+          console.log({ ...deviceInfo });
+          // createAndAssignDevice.sendRequest({ data: deviceInfo });
         }}
       >
         {(formikProps) => (

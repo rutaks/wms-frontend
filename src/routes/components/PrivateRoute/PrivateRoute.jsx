@@ -14,6 +14,7 @@ import IssuesView from '../../../views/IssuesView/IssuesView';
 import CreateTaskView from '../../../views/CreateTask/CreateTaskView';
 import TasksView from '../../../views/TasksView/TasksView';
 import { AgentDetails, ClientDetails } from '../../../views';
+import Overview from '../../../views/Overview';
 
 const PrivateRoute = () => {
   const router = useHistory();
@@ -33,6 +34,9 @@ const PrivateRoute = () => {
     <Fragment>
       <Sidebar>
         <Switch>
+          <Route exact path={'/'}>
+            <Overview />
+          </Route>
           <Route exact path={'/issues'}>
             <IssuesView />
           </Route>

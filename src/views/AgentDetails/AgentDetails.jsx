@@ -98,7 +98,7 @@ const AgentDetails = () => {
             block
             type="default"
             onClick={() => {
-              window.location.href = `http://localhost:5000/devices/download?o_._uuid=`;
+              window.location.href = `http://localhost:5000/employees/download/${uuid}`;
             }}
           >
             DOWNLOAD AGENT'S REPORT

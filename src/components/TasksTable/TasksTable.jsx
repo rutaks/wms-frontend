@@ -14,6 +14,8 @@ import TaskDetailsViewModal from '../TaskDetailsViewModal/TaskDetailsViewModal';
 import { AssigneePopOver } from '..';
 import useGetActiveAgentsPaged from '../../hooks/api/employees/useGetActiveAgentsPaged';
 import { taskQueryStrBuilder } from '../../util/query.util';
+import useGetEmployees from '../../hooks/api/employees/useGetEmployees';
+import useHandleApiState from '../../hooks/useHandleApiState';
 
 const TasksTable = ({
   items = [],
@@ -23,13 +25,22 @@ const TasksTable = ({
   isDataTableLoading = false,
   onFilter = () => {}
 }) => {
+  const getEmployees = useGetEmployees();
   const history = useHistory();
   const [isIssueDetailModalVisible, setIssueDetailModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
+  const [availableAgents, setAvailableAgents] = useState([]);
   const getActiveAgentsPaged = useGetActiveAgentsPaged();
   useEffect(() => {
     getActiveAgentsPaged.sendRequest();
+    getEmployees.sendRequest({
+      query: 'e_._isDeleted=false&e_._employeeRole=FIELD_AGENT',
+      page: 1,
+      limit: 100
+    });
   }, []);
+
+  useHandleApiState(getEmployees, { onSuccess: (res) => setAvailableAgents(res.payload.data) });
   return (
     <Fragment>
       <Breadcrumb>
@@ -129,6 +140,8 @@ const TasksTable = ({
           <Column title="#" render={(_, __, idx) => idx + 1} />
           <Column title="Title" render={(record) => `${record?.title}`} />
           <Column
+            key="a_._uuid"
+            filters={availableAgents.map((a) => ({ text: `${a.firstName} ${a.lastName}`, value: a.uuid }))}
             title="Assigned"
             render={(record) => (
               <Fragment>
