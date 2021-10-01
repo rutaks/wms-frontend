@@ -34,7 +34,7 @@ const Sidebar = ({ children }) => {
   };
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ height: '100%' }}>
       <Layout.Sider trigger={null} collapsible collapsed={collapsed}>
         <div style={{ marginLeft: collapsed ? '0px' : '40px' }}>
           {/* logo-no-color */}

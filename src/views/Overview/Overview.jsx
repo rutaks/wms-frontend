@@ -1,195 +1,79 @@
-import { Card, Col, Row } from 'antd';
-import React, { Fragment } from 'react';
+import { Card, Col, Progress, Row } from 'antd';
+import React, { Fragment, useEffect, useState } from 'react';
 import BigCalendar from 'react-big-calendar';
+import { ResponsiveCalendar } from '@nivo/calendar';
 import moment from 'moment';
+import { Brightness7, Brightness3 } from '@mui/icons-material';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { ResponsiveLine } from '@nivo/line';
 import { ResponsivePie } from '@nivo/pie';
+import useGetTaskCalendar from '../../hooks/api/tasks/useGetTaskCalendar';
+import useHandleApiState from '../../hooks/useHandleApiState';
+import useGetLineBarData from '../../hooks/api/tasks/useGetLineBarData';
+import { subDays } from 'date-fns';
+import { formatDateToString } from '../../util/date.util';
+import useGetTaskCountByPriority from '../../hooks/api/tasks/useGetTaskCountByPriority';
+import { Divider } from '@mui/material';
+import { useGetAnalysisByTime } from '../../hooks/api/tasks/useGetAnalysisByTime';
 
 moment.locale('en-GB');
 BigCalendar.momentLocalizer(moment);
 
-const now = new Date();
-const myEventsList = [
-  {
-    id: 0,
-    title: 'All Day Event very long title',
-    allDay: true,
-    start: new Date(2015, 3, 0),
-    end: new Date(2015, 3, 1)
-  },
-  {
-    id: 1,
-    title: 'Long Event',
-    start: new Date(2015, 3, 7),
-    end: new Date(2015, 3, 10)
-  },
-
-  {
-    id: 2,
-    title: 'DTS STARTS',
-    start: new Date(2016, 2, 13, 0, 0, 0),
-    end: new Date(2016, 2, 20, 0, 0, 0)
-  },
-
-  {
-    id: 3,
-    title: 'DTS ENDS',
-    start: new Date(2016, 10, 6, 0, 0, 0),
-    end: new Date(2016, 10, 13, 0, 0, 0)
-  },
-
-  {
-    id: 4,
-    title: 'Some Event',
-    start: new Date(2015, 3, 9, 0, 0, 0),
-    end: new Date(2015, 3, 10, 0, 0, 0)
-  },
-  {
-    id: 5,
-    title: 'Conference',
-    start: new Date(2015, 3, 11),
-    end: new Date(2015, 3, 13),
-    desc: 'Big conference for important people'
-  },
-  {
-    id: 6,
-    title: 'Meeting',
-    start: new Date(2015, 3, 12, 10, 30, 0, 0),
-    end: new Date(2015, 3, 12, 12, 30, 0, 0),
-    desc: 'Pre-meeting meeting, to prepare for the meeting'
-  },
-  {
-    id: 7,
-    title: 'Lunch',
-    start: new Date(2015, 3, 12, 12, 0, 0, 0),
-    end: new Date(2015, 3, 12, 13, 0, 0, 0),
-    desc: 'Power lunch'
-  },
-  {
-    id: 8,
-    title: 'Meeting',
-    start: new Date(2015, 3, 12, 14, 0, 0, 0),
-    end: new Date(2015, 3, 12, 15, 0, 0, 0)
-  },
-  {
-    id: 9,
-    title: 'Happy Hour',
-    start: new Date(2015, 3, 12, 17, 0, 0, 0),
-    end: new Date(2015, 3, 12, 17, 30, 0, 0),
-    desc: 'Most important meal of the day'
-  },
-  {
-    id: 10,
-    title: 'Dinner',
-    start: new Date(2015, 3, 12, 20, 0, 0, 0),
-    end: new Date(2015, 3, 12, 21, 0, 0, 0)
-  },
-  {
-    id: 11,
-    title: 'Planning Meeting with Paige',
-    start: new Date(2015, 3, 13, 8, 0, 0),
-    end: new Date(2015, 3, 13, 10, 30, 0)
-  },
-  {
-    id: 11.1,
-    title: 'Inconvenient Conference Call',
-    start: new Date(2015, 3, 13, 9, 30, 0),
-    end: new Date(2015, 3, 13, 12, 0, 0)
-  },
-  {
-    id: 11.2,
-    title: "Project Kickoff - Lou's Shoes",
-    start: new Date(2015, 3, 13, 11, 30, 0),
-    end: new Date(2015, 3, 13, 14, 0, 0)
-  },
-  {
-    id: 11.3,
-    title: 'Quote Follow-up - Tea by Tina',
-    start: new Date(2015, 3, 13, 15, 30, 0),
-    end: new Date(2015, 3, 13, 16, 0, 0)
-  },
-  {
-    id: 12,
-    title: 'Late Night Event',
-    start: new Date(2015, 3, 17, 19, 30, 0),
-    end: new Date(2015, 3, 18, 2, 0, 0)
-  },
-  {
-    id: 12.5,
-    title: 'Late Same Night Event',
-    start: new Date(2015, 3, 17, 19, 30, 0),
-    end: new Date(2015, 3, 17, 23, 30, 0)
-  },
-  {
-    id: 13,
-    title: 'Multi-day Event',
-    start: new Date(2015, 3, 20, 19, 30, 0),
-    end: new Date(2015, 3, 22, 2, 0, 0)
-  },
-  {
-    id: 14,
-    title: 'Today',
-    start: new Date(new Date().setHours(new Date().getHours() - 3)),
-    end: new Date(new Date().setHours(new Date().getHours() + 3))
-  },
-  {
-    id: 15,
-    title: 'Point in Time Event',
-    start: now,
-    end: now
-  },
-  {
-    id: 16,
-    title: 'Video Record',
-    start: new Date(2015, 3, 14, 15, 30, 0),
-    end: new Date(2015, 3, 14, 19, 0, 0)
-  },
-  {
-    id: 17,
-    title: 'Dutch Song Producing',
-    start: new Date(2015, 3, 14, 16, 30, 0),
-    end: new Date(2015, 3, 14, 20, 0, 0)
-  },
-  {
-    id: 18,
-    title: 'Itaewon Halloween Meeting',
-    start: new Date(2015, 3, 14, 16, 30, 0),
-    end: new Date(2015, 3, 14, 17, 30, 0)
-  },
-  {
-    id: 19,
-    title: 'Online Coding Test',
-    start: new Date(2015, 3, 14, 17, 30, 0),
-    end: new Date(2015, 3, 14, 20, 30, 0)
-  },
-  {
-    id: 20,
-    title: 'An overlapped Event',
-    start: new Date(2015, 3, 14, 17, 0, 0),
-    end: new Date(2015, 3, 14, 18, 30, 0)
-  },
-  {
-    id: 21,
-    title: 'Phone Interview',
-    start: new Date(2015, 3, 14, 17, 0, 0),
-    end: new Date(2015, 3, 14, 18, 30, 0)
-  },
-  {
-    id: 22,
-    title: 'Cooking Class',
-    start: new Date(2015, 3, 14, 17, 30, 0),
-    end: new Date(2015, 3, 14, 19, 0, 0)
-  },
-  {
-    id: 23,
-    title: 'Go to the gym',
-    start: new Date(2015, 3, 14, 18, 30, 0),
-    end: new Date(2015, 3, 14, 20, 0, 0)
-  }
-];
-
 const Overview = () => {
+  const [tasks, setTasks] = useState([]);
+  const [issuesByTime, setIssuesByTime] = useState();
+  const [tasksLineBar, setTasksLineBar] = useState([]);
+  const [pieChart, setTasksPieChart] = useState([]);
+  const getLineBarData = useGetLineBarData();
+  const getTaskCalendar = useGetTaskCalendar();
+  const getAnalysisByTime = useGetAnalysisByTime();
+  const getTaskCountByPriority = useGetTaskCountByPriority();
+
+  const getPercent = (amount) => {
+    const totalIssues =
+      issuesByTime?.morningCount ||
+      0 + issuesByTime?.afternoonCount ||
+      0 + issuesByTime?.eveningCount ||
+      0 + issuesByTime?.nightCount ||
+      0;
+
+    return (amount * 100) / totalIssues;
+  };
+
+  const getItems = () => {
+    const columns = [];
+    tasksLineBar.forEach((farmer) => {
+      const result = farmer.data
+        .sort((data1, data2) => new Date(data1.date) - new Date(data2.date))
+        .map((res) => {
+          const obj = {
+            x: formatDateToString(new Date(res.date)),
+            y: res.count
+          };
+          return obj;
+        });
+      columns.push({
+        id: `${farmer.id}`,
+        data: result
+      });
+    });
+    return columns;
+  };
+
+  useEffect(() => {
+    getTaskCountByPriority.sendRequest();
+    getLineBarData.sendRequest(subDays(new Date(), 30).toISOString(), new Date().toISOString());
+    getTaskCalendar.sendRequest();
+    getAnalysisByTime.sendRequest();
+  }, []);
+
+  useHandleApiState(getTaskCalendar, { onSuccess: (res) => setTasks(res.payload) });
+  useHandleApiState(getLineBarData, { onSuccess: (res) => setTasksLineBar(res.payload) });
+  useHandleApiState(getTaskCountByPriority, { onSuccess: (res) => setTasksPieChart(res.payload) });
+  useHandleApiState(getAnalysisByTime, { onSuccess: (res) => setIssuesByTime(res.payload) });
+
+  if (getTaskCalendar.isLoading) return null;
+
   return (
     <Fragment>
       <Card
@@ -201,28 +85,55 @@ const Overview = () => {
       >
         <h3>Activity Calendar</h3>
         <BigCalendar
-          events={[
-            {
-              title: 'My event',
-              allDay: false,
-              start: new Date(2018, 0, 1, 10, 0), // 10.00 AM
-              end: new Date(2018, 0, 1, 14, 0) // 2.00 PM
-            },
-            {
-              title: 'My event 2',
-              allDay: false,
-              start: new Date(2018, 0, 1, 10, 0), // 10.00 AM
-              end: new Date(2018, 0, 1, 14, 0) // 2.00 PM
-            }
-          ]}
+          events={tasks.map((t) => ({ ...t, start: new Date(t.start), end: new Date(t.end) }))}
           step={60}
           view="week"
           views={['week']}
-          min={new Date(2008, 0, 1, 8, 0)} // 8.00 AM
-          max={new Date(2008, 0, 1, 17, 0)} // Max will be 6.00 PM!
-          date={new Date(2018, 0, 1)}
         />
       </Card>
+      <Row>
+        <Col lg={12}>
+          <Card
+            className="site-layout-background"
+            style={{
+              margin: '24px 16px',
+              borderRadius: '12px'
+            }}
+          >
+            <h3>Issues per time ranges</h3>
+            <Row>
+              <Col lg={12}>
+                <Brightness7 />
+                {' . 6am - 12pm'}
+                <Progress percent={getPercent(issuesByTime?.morningCount)} status="active" />
+                <br />
+                <br />
+                <Divider />
+                <br />
+                <Brightness7 />
+                {'  12pm - 6pm'}
+                <Progress percent={getPercent(issuesByTime?.afternoonCount)} status="active" />
+                <br />
+                <br />
+              </Col>
+              <Col offset={2} lg={10}>
+                <Brightness3 />
+                {'  6pm - 12am'}
+                <Progress percent={getPercent(issuesByTime?.eveningCount)} status="active" />
+                <br />
+                <br />
+                <Divider />
+                <br />
+                <Brightness3 />
+                {'  12am - 6am'}
+                <Progress percent={getPercent(issuesByTime?.nightCount)} status="active" />
+                <br />
+                <br />
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
       <Row>
         <Col lg={12}>
           <div
@@ -236,279 +147,32 @@ const Overview = () => {
             }}
           >
             <h3>Activity Line Chart</h3>
-            <ResponsiveLine
-              data={[
+            <ResponsiveCalendar
+              data={[]}
+              from="2021-03-01"
+              to="2021-07-12"
+              emptyColor="#eeeeee"
+              colors={['#61cdbb', '#97e3d5', '#e8c1a0', '#f47560']}
+              margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+              yearSpacing={40}
+              monthBorderColor="#ffffff"
+              dayBorderWidth={2}
+              dayBorderColor="#ffffff"
+              legends={[
                 {
-                  id: 'japan',
-                  color: 'hsl(339, 70%, 50%)',
-                  data: [
-                    {
-                      x: 'plane',
-                      y: 39
-                    },
-                    {
-                      x: 'helicopter',
-                      y: 252
-                    },
-                    {
-                      x: 'boat',
-                      y: 191
-                    },
-                    {
-                      x: 'train',
-                      y: 266
-                    },
-                    {
-                      x: 'subway',
-                      y: 297
-                    },
-                    {
-                      x: 'bus',
-                      y: 31
-                    },
-                    {
-                      x: 'car',
-                      y: 95
-                    },
-                    {
-                      x: 'moto',
-                      y: 197
-                    },
-                    {
-                      x: 'bicycle',
-                      y: 23
-                    },
-                    {
-                      x: 'horse',
-                      y: 105
-                    },
-                    {
-                      x: 'skateboard',
-                      y: 158
-                    },
-                    {
-                      x: 'others',
-                      y: 17
-                    }
-                  ]
-                },
-                {
-                  id: 'france',
-                  color: 'hsl(334, 70%, 50%)',
-                  data: [
-                    {
-                      x: 'plane',
-                      y: 42
-                    },
-                    {
-                      x: 'helicopter',
-                      y: 298
-                    },
-                    {
-                      x: 'boat',
-                      y: 240
-                    },
-                    {
-                      x: 'train',
-                      y: 175
-                    },
-                    {
-                      x: 'subway',
-                      y: 286
-                    },
-                    {
-                      x: 'bus',
-                      y: 242
-                    },
-                    {
-                      x: 'car',
-                      y: 124
-                    },
-                    {
-                      x: 'moto',
-                      y: 94
-                    },
-                    {
-                      x: 'bicycle',
-                      y: 139
-                    },
-                    {
-                      x: 'horse',
-                      y: 221
-                    },
-                    {
-                      x: 'skateboard',
-                      y: 76
-                    },
-                    {
-                      x: 'others',
-                      y: 172
-                    }
-                  ]
-                },
-                {
-                  id: 'us',
-                  color: 'hsl(61, 70%, 50%)',
-                  data: [
-                    {
-                      x: 'plane',
-                      y: 300
-                    },
-                    {
-                      x: 'helicopter',
-                      y: 155
-                    },
-                    {
-                      x: 'boat',
-                      y: 218
-                    },
-                    {
-                      x: 'train',
-                      y: 279
-                    },
-                    {
-                      x: 'subway',
-                      y: 99
-                    },
-                    {
-                      x: 'bus',
-                      y: 33
-                    },
-                    {
-                      x: 'car',
-                      y: 272
-                    },
-                    {
-                      x: 'moto',
-                      y: 192
-                    },
-                    {
-                      x: 'bicycle',
-                      y: 190
-                    },
-                    {
-                      x: 'horse',
-                      y: 16
-                    },
-                    {
-                      x: 'skateboard',
-                      y: 174
-                    },
-                    {
-                      x: 'others',
-                      y: 150
-                    }
-                  ]
-                },
-                {
-                  id: 'germany',
-                  color: 'hsl(90, 70%, 50%)',
-                  data: [
-                    {
-                      x: 'plane',
-                      y: 110
-                    },
-                    {
-                      x: 'helicopter',
-                      y: 85
-                    },
-                    {
-                      x: 'boat',
-                      y: 210
-                    },
-                    {
-                      x: 'train',
-                      y: 103
-                    },
-                    {
-                      x: 'subway',
-                      y: 194
-                    },
-                    {
-                      x: 'bus',
-                      y: 261
-                    },
-                    {
-                      x: 'car',
-                      y: 284
-                    },
-                    {
-                      x: 'moto',
-                      y: 102
-                    },
-                    {
-                      x: 'bicycle',
-                      y: 22
-                    },
-                    {
-                      x: 'horse',
-                      y: 176
-                    },
-                    {
-                      x: 'skateboard',
-                      y: 64
-                    },
-                    {
-                      x: 'others',
-                      y: 214
-                    }
-                  ]
-                },
-                {
-                  id: 'norway',
-                  color: 'hsl(89, 70%, 50%)',
-                  data: [
-                    {
-                      x: 'plane',
-                      y: 48
-                    },
-                    {
-                      x: 'helicopter',
-                      y: 41
-                    },
-                    {
-                      x: 'boat',
-                      y: 147
-                    },
-                    {
-                      x: 'train',
-                      y: 2
-                    },
-                    {
-                      x: 'subway',
-                      y: 72
-                    },
-                    {
-                      x: 'bus',
-                      y: 285
-                    },
-                    {
-                      x: 'car',
-                      y: 238
-                    },
-                    {
-                      x: 'moto',
-                      y: 75
-                    },
-                    {
-                      x: 'bicycle',
-                      y: 237
-                    },
-                    {
-                      x: 'horse',
-                      y: 201
-                    },
-                    {
-                      x: 'skateboard',
-                      y: 281
-                    },
-                    {
-                      x: 'others',
-                      y: 161
-                    }
-                  ]
+                  anchor: 'bottom-right',
+                  direction: 'row',
+                  translateY: 36,
+                  itemCount: 4,
+                  itemWidth: 42,
+                  itemHeight: 36,
+                  itemsSpacing: 14,
+                  itemDirection: 'right-to-left'
                 }
               ]}
+            />
+            <ResponsiveLine
+              data={getItems()}
               margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
               xScale={{ type: 'point' }}
               yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
@@ -581,38 +245,7 @@ const Overview = () => {
             }}
           >
             <ResponsivePie
-              data={[
-                {
-                  id: 'scala',
-                  label: 'scala',
-                  value: 167,
-                  color: 'hsl(117, 70%, 50%)'
-                },
-                {
-                  id: 'python',
-                  label: 'python',
-                  value: 394,
-                  color: 'hsl(43, 70%, 50%)'
-                },
-                {
-                  id: 'erlang',
-                  label: 'erlang',
-                  value: 239,
-                  color: 'hsl(12, 70%, 50%)'
-                },
-                {
-                  id: 'go',
-                  label: 'go',
-                  value: 494,
-                  color: 'hsl(59, 70%, 50%)'
-                },
-                {
-                  id: 'php',
-                  label: 'php',
-                  value: 431,
-                  color: 'hsl(331, 70%, 50%)'
-                }
-              ]}
+              data={Object.keys(pieChart)?.map((l) => ({ id: l, label: l, value: pieChart[l] }))}
               margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
               innerRadius={0.5}
               padAngle={0.7}
