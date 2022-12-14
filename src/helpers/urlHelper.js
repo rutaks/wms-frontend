@@ -6,10 +6,11 @@ import 'dotenv/config';
  */
 
 // eslint-disable-next-line no-undef
-const { REACT_APP_BASE_URL_BACKEND } = process.env;
+const { REACT_APP_BASE_URL_BACKEND, REACT_APP_GOOGLE_MAP_KEY } = process.env;
 
 const backend = {
-  baseUrl: REACT_APP_BASE_URL_BACKEND || 'http://devapi.ijisho.rw'
+  baseUrl: REACT_APP_BASE_URL_BACKEND || 'http://devapi.ijisho.rw',
+  googleMapApiKey: REACT_APP_GOOGLE_MAP_KEY
 };
 
 const getManagerBranch = () => {

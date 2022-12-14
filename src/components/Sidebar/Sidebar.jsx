@@ -4,13 +4,12 @@ import { Layout, Menu, Dropdown, Row, Col } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  BarChartOutlined,
+  ExclamationCircleOutlined,
   DownOutlined,
   UserOutlined,
   ContactsOutlined,
-  AlertOutlined,
-  ControlOutlined,
-  CreditCardOutlined
+  BarChartOutlined,
+  UnorderedListOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../../context/Auth';
 import Avatar from 'antd/lib/avatar/avatar';
@@ -21,11 +20,13 @@ const Sidebar = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [navItems] = useState([
     { name: 'Overview', url: '/', icon: <BarChartOutlined /> },
-    { name: 'Clients', url: '/clients', icon: <UserOutlined /> },
-    { name: 'Employees', url: '/employees', icon: <ContactsOutlined /> },
-    { name: 'Reports', url: '/reports', icon: <AlertOutlined /> },
-    { name: 'Devices', url: '/devices', icon: <ControlOutlined /> },
-    { name: 'Billings', url: '/bills', icon: <CreditCardOutlined /> }
+    { name: 'Issues', url: '/issues', icon: <ExclamationCircleOutlined /> },
+    { name: 'Tasks', url: '/tasks', icon: <UnorderedListOutlined /> },
+    { name: 'Employees', url: '/employees', icon: <ContactsOutlined /> }
+    // { name: 'Devices', url: '/devices', icon: <ControlOutlined /> }
+    // { name: 'Clients', url: '/clients', icon: <UserOutlined /> },
+    // { name: 'Reports', url: '/reports', icon: <AlertOutlined /> },
+    // { name: 'Billings', url: '/bills', icon: <CreditCardOutlined /> }
   ]);
 
   const toggle = () => {
@@ -33,7 +34,7 @@ const Sidebar = ({ children }) => {
   };
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ height: '100%' }}>
       <Layout.Sider trigger={null} collapsible collapsed={collapsed}>
         <div style={{ marginLeft: collapsed ? '0px' : '40px' }}>
           {/* logo-no-color */}
@@ -56,7 +57,7 @@ const Sidebar = ({ children }) => {
             <Menu.Item key={navItem.url}>
               <Link to={navItem.url} />
               {navItem.icon}
-              {!collapsed && navItem.name}
+              {!collapsed && <span style={{ paddingLeft: '12px' }}>{navItem.name}</span>}
             </Menu.Item>
           ))}
         </Menu>
@@ -67,7 +68,7 @@ const Sidebar = ({ children }) => {
             className: 'trigger',
             onClick: toggle
           })}
-          <div style={{ float: 'right', paddingRight: '24px' }}>
+          <div style={{ float: 'right' }}>
             <Dropdown
               overlay={
                 <Menu>
@@ -86,13 +87,13 @@ const Sidebar = ({ children }) => {
                 </Menu>
               }
             >
-              <a href="/" className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+              <a href="/" onClick={(e) => e.preventDefault()}>
                 <Row>
                   <Col style={{ paddingRight: '12px' }}>
                     <Avatar shape="square" size="small" icon={<UserOutlined />} />
                   </Col>
                   <Col>
-                    {`${auth.user.firstName} ${auth.user.lastName}`} <DownOutlined />
+                    {`${auth?.user?.firstName} ${auth?.user?.lastName}`} <DownOutlined />
                   </Col>
                 </Row>
               </a>

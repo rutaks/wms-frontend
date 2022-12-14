@@ -1,25 +1,35 @@
 import React, { Fragment } from 'react';
 import { Formik } from 'formik';
 import Form from 'antd/lib/form';
-import { Button, Col, DatePicker, Row, Select, Upload } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, Col, DatePicker, Radio, Row } from 'antd';
 import moment from 'moment';
-import { clientInitialValues } from '../../validations/client.validation';
+import { clientInitialValues, clientValidationSchema } from '../../validations/client.validation';
 import { CustomInput } from '../';
 import PhoneNumberInput from '../PhoneNumberInput';
 import { getHelp, getValidationStatus } from '../../util/formik.util';
 import Text from 'antd/lib/typography/Text';
+import Upload from '../Upload';
 
-const ClientForm = () => {
+const ClientForm = ({ onSubmit, mode, initialValues, isUploadingImg, isSubmitting }) => {
   return (
-    <Formik initialValues={clientInitialValues}>
+    <Formik
+      initialValues={initialValues || clientInitialValues}
+      validationSchema={clientValidationSchema}
+      onSubmit={(formikData) => {
+        onSubmit(formikData);
+      }}
+    >
       {(formikProps) => (
         <Fragment>
           <Row>
-            <Text strong>Profile Picture</Text>
-            <Upload listType="picture-card" className="avatar-uploader" showUploadList={false}>
-              <PlusOutlined />
-            </Upload>
+            <Col lg={4} md={24} sm={24}>
+              <Text strong>Profile Picture</Text>
+              <Upload
+                crop
+                isLoading={isUploadingImg}
+                setFile={(f) => formikProps.setFieldValue('profilePictureUrl', f)}
+              />
+            </Col>
           </Row>
           <br />
           <Row>
@@ -35,26 +45,37 @@ const ClientForm = () => {
           <Row>
             <Col lg={6}>
               <Form.Item
-                name="country"
-                validateStatus={getValidationStatus(formikProps, 'country')}
-                help={getHelp(formikProps, 'country')}
+                validateStatus={getValidationStatus(formikProps, 'gender')}
+                help={getHelp(formikProps, 'gender')}
               >
-                <Row align="middle" className="mabo16">
-                  <Text strong>Gender</Text>
-                  <Select>
-                    <Select.Option value={'MALE'}>MALE</Select.Option>
-                    <Select.Option value={'FEMALE'}>FEMALE</Select.Option>
-                  </Select>
+                <Text strong>Gender</Text>
+                <Row align="middle">
+                  <Radio.Group onChange={(g) => formikProps.setFieldValue('gender', g.target.value)}>
+                    <Radio value={'MALE'}>Male</Radio>
+                    <Radio value={'FEMALE'}>Female</Radio>
+                  </Radio.Group>
                 </Row>
               </Form.Item>
-            </Col>
-            <Col offset={1} flex="auto">
-              <PhoneNumberInput defaultPhoneNumber={'+250782697954'} />
             </Col>
           </Row>
           <Row>
             <Col flex="auto">
               <CustomInput formikProps={formikProps} fieldName="email" label="Email" />
+            </Col>
+            <Col offset={1} flex="auto">
+              <Form.Item
+                validateStatus={getValidationStatus(formikProps, 'phoneNumber')}
+                help={getHelp(formikProps, 'phoneNumber')}
+              >
+                <PhoneNumberInput
+                  label="Phone number"
+                  defaultPhoneNumber={formikProps?.values?.phoneNumber}
+                  onChange={(p) => {
+                    console.log(p);
+                    formikProps.setFieldValue('phoneNumber', `+${p}`);
+                  }}
+                />
+              </Form.Item>
             </Col>
           </Row>
           <Row>
@@ -75,9 +96,10 @@ const ClientForm = () => {
           </Row>
           <Button
             block
-            type="primary"
-            onClick={() => formikProps.setFieldValue('firstName', !formikProps.values.generateCode)}
+            type={mode === 'EDIT' ? 'warning' : 'primary'}
+            onClick={() => formikProps.handleSubmit()}
             style={{ fontWeight: 'bold' }}
+            loading={isSubmitting}
           >
             SUBMIT
           </Button>
