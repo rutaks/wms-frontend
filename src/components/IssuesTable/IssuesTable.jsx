@@ -40,7 +40,7 @@ const IssuesTable = ({
           overlay={
             <Menu
               onClick={(v) => {
-                window.location.href = `http://localhost:5000/issues/download?${v.key}`;
+                window.location.href = `https://wms-api.ruubik.com/issues/download?${v.key}`;
               }}
             >
               {[

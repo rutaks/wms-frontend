@@ -268,7 +268,7 @@ const ClientDetails = (props) => {
                 block
                 type="default"
                 onClick={() => {
-                  window.location.href = `http://localhost:5000/devices/download?o_._uuid=${clientUuid}`;
+                  window.location.href = `https://wms-api.ruubik.com/devices/download?o_._uuid=${clientUuid}`;
                 }}
               >
                 DOWNLOAD CLIENT'S REPORT
@@ -287,7 +287,7 @@ const ClientDetails = (props) => {
       >
         <Row>
           <Col span={5}>
-            <Title onClick={() => Axios.get('http://localhost:5000/devices/test')} level={3}>
+            <Title onClick={() => Axios.get('https://wms-api.ruubik.com/devices/test')} level={3}>
               Usage Timeline ({clientDevices?.data[0]?.code})
             </Title>
             <br />

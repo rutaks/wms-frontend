@@ -72,7 +72,7 @@ const TasksTable = ({
           overlay={
             <Menu
               onClick={(v) => {
-                window.location.href = `http://localhost:5000/tasks/download?${v.key}`;
+                window.location.href = `https://wms-api.ruubik.com/tasks/download?${v.key}`;
               }}
             >
               {[
@@ -96,7 +96,7 @@ const TasksTable = ({
           overlay={
             <Menu
               onClick={(v) => {
-                window.location.href = `http://localhost:5000/tasks/download?${v.key}`;
+                window.location.href = `https://wms-api.ruubik.com/tasks/download?${v.key}`;
               }}
             >
               {[

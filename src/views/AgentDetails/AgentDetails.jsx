@@ -98,7 +98,7 @@ const AgentDetails = () => {
             block
             type="default"
             onClick={() => {
-              window.location.href = `http://localhost:5000/employees/download/${uuid}`;
+              window.location.href = `https://wms-api.ruubik.com/employees/download/${uuid}`;
             }}
           >
             DOWNLOAD AGENT'S REPORT
