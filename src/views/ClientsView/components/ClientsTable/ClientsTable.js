@@ -122,7 +122,7 @@ const ClientsTable = ({ items, pagination, goToPage, onRefresh, isDataTableLoadi
             block
             type="default"
             onClick={() => {
-              window.location.href = 'http://localhost:5000/clients/download';
+              window.location.href = 'https://wms-api.ruubik.com/clients/download';
             }}
           >
             DOWNLOAD CLIENT REPORT

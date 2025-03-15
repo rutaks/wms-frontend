@@ -92,7 +92,7 @@ const AgentsView = () => {
             block
             type="default"
             onClick={() => {
-              window.location.href = `http://localhost:5000/employees/download`;
+              window.location.href = `https://wms-api.ruubik.com/employees/download`;
             }}
           >
             DOWNLOAD REPORT OF ALL EMPLOYEES
@@ -103,7 +103,7 @@ const AgentsView = () => {
             block
             type="default"
             onClick={() => {
-              window.location.href = `http://localhost:5000/employees/download/task-count`;
+              window.location.href = `https://wms-api.ruubik.com/employees/download/task-count`;
             }}
           >
             DOWNLOAD EMPLOYEES WITH NO. TASKS
@@ -115,7 +115,7 @@ const AgentsView = () => {
             overlay={
               <Menu
                 onClick={(v) => {
-                  window.location.href = `http://localhost:5000/employees/download?${v.key}`;
+                  window.location.href = `https://wms-api.ruubik.com/employees/download?${v.key}`;
                 }}
               >
                 {[

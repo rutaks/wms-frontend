@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: ${DOCKER_REGISTRY}/wms-ui:${TAG}
+    container_name: wms_ui
+    restart: always
+    ports:
+      - '8080:80'
+    networks:
+      - wms_network
+
+networks:
+  wms_network:
+    external: true
