@@ -37,24 +37,32 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <center>
-        <Row
-          style={{ marginLeft: '160px', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}
+      <Row
+        style={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <Col 
+          style={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
         >
-          <Col style={{ alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
-            <img
-              src={window.location.origin + '/img/logo.png'}
-              style={{
-                height: '120px',
-                aspectRatio: 3 / 2
-              }}
-              alt="Logo"
-            />
-            <br />
-            <Title className="login-title">WMS</Title>
-          </Col>
-        </Row>
-      </center>
+          <img
+            src={window.location.origin + '/img/logo.png'}
+            style={{
+              height: '120px',
+              width: 'auto'
+            }}
+            alt="Logo"
+          />
+          <Title className="login-title">FMS</Title>
+        </Col>
+      </Row>
       <Col span={24}>
         <br />
         <Formik
@@ -121,6 +129,46 @@ const Login = () => {
             );
           }}
         </Formik>
+        <div style={{ 
+          marginTop: '30px', 
+          textAlign: 'center', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center' 
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '8px',
+            marginBottom: '12px'
+          }}>
+            <span style={{ fontSize: '14px', color: '#888' }}>powered by</span>
+          </div>
+          <a 
+            href="https://ruubik.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              textDecoration: 'none', 
+              cursor: 'pointer' 
+            }}
+          >
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '8px' 
+            }}>
+              <img 
+                src={window.location.origin + '/img/ruubik-logo.jpg'} 
+                alt="Ruubik Logo" 
+                style={{ height: '30px', width: 'auto' }} 
+              />
+              <strong style={{ fontSize: '16px', color: '#555' }}>Ruubik</strong>
+            </div>
+          </a>
+        </div>
       </Col>
     </AuthLayout>
   );
