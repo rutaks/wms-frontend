@@ -1,0 +1,106 @@
+name: Deploy Frontend to Digital Ocean
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Extract tag version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          build-args: |
+            REACT_APP_BASE_URL_BACKEND=${{ secrets.REACT_APP_BASE_URL_BACKEND }}
+            REACT_APP_GOOGLE_MAP_KEY=${{ secrets.REACT_APP_GOOGLE_MAP_KEY }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/wms-ui:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/wms-ui:latest
+      
+      - name: Deploy to Digital Ocean
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            # Debug information
+            echo "Current user: $(whoami)"
+            echo "Current directory: $(pwd)"
+            
+            # Create project directory if it doesn't exist
+            mkdir -p ~/wms-ui
+            
+            # Create .env file with proper formatting
+            cat > ~/wms-ui/.env << EOF
+            DOCKER_REGISTRY=ghcr.io/${{ github.repository_owner }}
+            TAG=${{ steps.get_version.outputs.VERSION }}
+            EOF
+            
+            # Create or update docker-compose.yml
+            cat > ~/wms-ui/docker-compose.yml << 'EOL'
+            version: '3.8'
+
+            services:
+              frontend:
+                image: ${DOCKER_REGISTRY}/wms-ui:${TAG}
+                container_name: wms_ui
+                restart: always
+                ports:
+                  - "8080:80"
+                networks:
+                  - wms_network
+
+            networks:
+              wms_network:
+                external: true
+            EOL
+            
+            # Pull the latest images and restart containers
+            cd ~/wms-ui
+            
+            # Login to GitHub Container Registry
+            echo "${{ secrets.GH_ACCESS_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # Stop any existing containers
+            docker ps
+            
+            # Check which version of Docker Compose is available and use it
+            docker compose down || true
+            docker compose pull
+            docker compose up -d
+            
+            # Verify containers are running
+            docker ps
+            
+            # Check container logs if they exist
+            sleep 5
+            for container in $(docker ps -aq --filter "name=wms_ui"); do
+              echo "========== Logs for container $container =========="
+              docker logs $container || true
+            done
+            
+            # Clean up old images
+            docker image prune -af --filter "until=24h"
